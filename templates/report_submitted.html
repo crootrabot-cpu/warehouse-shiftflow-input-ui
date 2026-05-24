@@ -4,21 +4,40 @@
 
 {% block body %}
   <main class="shell">
-    <section class="card">
-      <div class="eyebrow">Report submitted</div>
-      <h1>{{ person.name }}</h1>
-      <p>{{ person.role }} • {{ person.team }}</p>
-      <div class="question-block">
-        <strong>Summary</strong>
-        <p class="helper">{{ report.summary_text or 'No summary captured.' }}</p>
-      </div>
-      {% for answer in report.answers %}
-        <div class="question-block">
-          <label>{{ answer.question_text }}</label>
-          <p class="helper">{{ answer.answer_value }}</p>
+    <div class="app-frame detail-shell">
+      <header class="app-topbar">
+        <div class="brand-lockup">
+          <span class="brand-lockup__meta">Report submitted</span>
+          <span class="brand-lockup__title">Individual operating snapshot</span>
         </div>
-      {% endfor %}
-      <a class="button-link" href="/">Back to intake</a>
-    </section>
+        <div class="topbar-meta">
+          <a class="button-link button-link--small" href="/">Back to intake</a>
+          <a class="button-link button-link--small" href="/dashboard">Open dashboard</a>
+        </div>
+      </header>
+
+      <section class="hero-card">
+        <div class="hero-grid hero-grid--balanced">
+          <div class="hero-copy">
+            <div class="eyebrow">Submitted detail</div>
+            <h1>{{ person.name }}</h1>
+            <p class="hero-subtitle">{{ person.role }} • {{ person.team }}</p>
+          </div>
+          <article class="summary-card summary-card--spotlight">
+            <span class="summary-card__label">Summary</span>
+            <p class="memo-lead">{{ report.summary_text or 'No summary captured.' }}</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="report-answer-grid">
+        {% for answer in report.answers %}
+          <article class="report-answer-card">
+            <span class="section-meta">{{ answer.question_text }}</span>
+            <p class="memo-lead">{{ answer.answer_value or 'No answer submitted.' }}</p>
+          </article>
+        {% endfor %}
+      </section>
+    </div>
   </main>
 {% endblock %}

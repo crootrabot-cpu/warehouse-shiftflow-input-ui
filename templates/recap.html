@@ -4,90 +4,160 @@
 
 {% block body %}
   <main class="shell">
-    <section class="card wide-card">
-      <div class="eyebrow">End-of-day recap</div>
-      <h1>End-of-day recap</h1>
-      <p>Clean management brief for {{ recap.report_day.isoformat() }}.</p>
+    <div class="app-frame recap-shell">
+      <header class="app-topbar">
+        <div class="brand-lockup">
+          <span class="brand-lockup__meta">End-of-day recap</span>
+          <span class="brand-lockup__title">Management brief</span>
+        </div>
+        <div class="topbar-meta">
+          <a class="button-link button-link--small" href="/dashboard">Open dashboard</a>
+          <span class="meta-chip meta-chip--subtle mono">{{ recap.report_day.isoformat() }}</span>
+        </div>
+      </header>
 
-      <div class="panel-grid manager-grid">
-        <div class="question-block">
-          <label>Submitted today</label>
-          <p class="helper">{{ recap.submitted|length }} reports received.</p>
+      <section class="hero-card">
+        <div class="hero-grid hero-grid--balanced">
+          <div class="hero-copy">
+            <div class="eyebrow">Deeper read</div>
+            <h1>Clean management brief without making leadership read every raw answer.</h1>
+            <p class="hero-subtitle">This is the longer-form reading surface. Submitted wins, risks, and follow-up answers are grouped into clearer decision buckets.</p>
+          </div>
+          <div class="hero-strip">
+            <article class="signal-card">
+              <span class="signal-card__label">Submitted today</span>
+              <strong class="signal-card__value">{{ recap.submitted|length }}</strong>
+              <p class="signal-card__detail">Reports currently shaping the management readout.</p>
+            </article>
+            <article class="signal-card">
+              <span class="signal-card__label">Missing today</span>
+              <strong class="signal-card__value">{{ recap.missing|length }}</strong>
+              <p class="signal-card__detail">Gaps that still need leadership follow-up.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="recap-grid">
+        <article class="question-block">
+          <div class="panel-header">
+            <div>
+              <div class="eyebrow">Submitted today</div>
+              <h2>What came in</h2>
+            </div>
+            <span class="meta-chip meta-chip--good">{{ recap.submitted|length }} received</span>
+          </div>
           <div class="stack compact-stack">
             {% for item in recap.submitted %}
-              <div class="assignment-card">
+              <article class="assignment-card">
                 <div class="assignment-card__header">
                   <div>
                     <strong>{{ item.person.name }}</strong>
                     <p class="helper no-margin">{{ item.person.role }} • {{ item.person.team }}</p>
                   </div>
                 </div>
-                <p class="helper no-margin">Win</p>
-                <p>{{ item.report.summary_text or 'No win summary submitted.' }}</p>
+                <div class="divider"></div>
+                <span class="section-meta">Win</span>
+                <p class="memo-lead">{{ item.report.summary_text or 'No win summary submitted.' }}</p>
                 {% if item.risk_answer %}
-                  <p class="helper no-margin">Watch</p>
+                  <span class="section-meta">Watch</span>
                   <p>{{ item.risk_answer.answer_value }}</p>
                 {% endif %}
-              </div>
+              </article>
             {% endfor %}
           </div>
-        </div>
+        </article>
 
-        <div class="question-block">
-          <label>Missing today</label>
-          <p class="helper">{{ recap.missing|length }} people still missing.</p>
+        <article class="question-block">
+          <div class="panel-header">
+            <div>
+              <div class="eyebrow">Missing today</div>
+              <h2>Still waiting</h2>
+            </div>
+            <span class="meta-chip meta-chip--warning">{{ recap.missing|length }} open</span>
+          </div>
           <div class="stack compact-stack">
             {% for person in recap.missing %}
-              <div class="assignment-card assignment-card--inactive">
+              <article class="assignment-card assignment-card--inactive">
                 <strong>{{ person.name }}</strong>
                 <p class="helper no-margin">{{ person.role }} • {{ person.team }}</p>
-              </div>
+              </article>
+            {% else %}
+              <article class="assignment-card">
+                <strong>No missing reports.</strong>
+                <p class="helper no-margin">Everyone in today’s roster submitted.</p>
+              </article>
             {% endfor %}
           </div>
-        </div>
-      </div>
+        </article>
+      </section>
 
-      <div class="panel-grid manager-grid">
-        <div class="question-block">
-          <label>Top wins</label>
+      <section class="recap-grid">
+        <article class="question-block">
+          <div class="panel-header">
+            <div>
+              <div class="eyebrow">Top wins</div>
+              <h2>What moved the day forward</h2>
+            </div>
+          </div>
           <div class="stack compact-stack">
             {% for item in recap.top_wins %}
-              <div class="assignment-card">
+              <article class="assignment-card">
                 <strong>{{ item.person.name }}</strong>
-                <p class="helper no-margin">{{ item.report.summary_text }}</p>
-              </div>
+                <p class="memo-lead">{{ item.report.summary_text }}</p>
+              </article>
+            {% else %}
+              <article class="assignment-card">
+                <strong>No wins submitted yet.</strong>
+              </article>
             {% endfor %}
           </div>
-        </div>
+        </article>
 
-        <div class="question-block">
-          <label>Top risks</label>
+        <article class="question-block">
+          <div class="panel-header">
+            <div>
+              <div class="eyebrow">Top risks</div>
+              <h2>What leadership should watch next</h2>
+            </div>
+          </div>
           <div class="stack compact-stack">
             {% for person, answer in recap.top_risks %}
-              <div class="assignment-card">
+              <article class="assignment-card assignment-card--inactive">
                 <strong>{{ person.name }}</strong>
-                <p class="helper no-margin">{{ answer.answer_value }}</p>
-              </div>
+                <p class="memo-lead">{{ answer.answer_value }}</p>
+              </article>
+            {% else %}
+              <article class="assignment-card">
+                <strong>No risks submitted yet.</strong>
+              </article>
             {% endfor %}
           </div>
-        </div>
-      </div>
+        </article>
+      </section>
 
-      <div class="question-block">
-        <label>Assigned question answers</label>
-        <p class="helper">Focused follow-up answers that need leadership eyes.</p>
-        <div class="stack compact-stack">
+      <article class="question-block">
+        <div class="panel-header">
+          <div>
+            <div class="eyebrow">Assigned question answers</div>
+            <h2>Follow-ups needing leadership eyes</h2>
+          </div>
+          <span class="meta-chip meta-chip--accent">focused follow-up</span>
+        </div>
+        <div class="report-answer-grid">
           {% for person, answer in recap.assigned_follow_ups %}
-            <div class="assignment-card">
-              <strong>{{ person.name }}</strong>
-              <p class="helper no-margin">{{ answer.question_text }}</p>
+            <article class="report-answer-card">
+              <span class="section-meta">{{ person.name }}</span>
+              <strong>{{ answer.question_text }}</strong>
               <p>{{ answer.answer_value }}</p>
-            </div>
+            </article>
           {% else %}
-            <p class="helper">No assigned follow-up answers submitted yet.</p>
+            <article class="report-answer-card">
+              <strong>No assigned follow-up answers submitted yet.</strong>
+            </article>
           {% endfor %}
         </div>
-      </div>
-    </section>
+      </article>
+    </div>
   </main>
 {% endblock %}

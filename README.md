@@ -1,6 +1,30 @@
-# ShiftFlow Input Prototype
+# ShiftFlow Input Prototype / Operations Report
 
-A premium conversational input prototype for warehouse end-of-day reporting.
+A premium conversational input prototype that has now expanded into a FastAPI-based **Operations Report** leadership dashboard and recap tool.
+
+## Current active app
+
+The active product surface is the server-rendered FastAPI app under:
+- `app/`
+- `templates/`
+- `tests/`
+
+Primary routes:
+- `/` — intake
+- `/dashboard` — leadership cockpit
+- `/recap` — management brief
+- `/execute-recap` — review-first executive recap
+
+## Work-computer handoff
+
+Use the dedicated handoff doc:
+
+- `docs/work-computer-handoff.md`
+
+Current UI redesign branch:
+
+- `feature/ops-report-linear-stripe-ui`
+
 
 ## What this is
 

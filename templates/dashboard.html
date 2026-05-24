@@ -4,152 +4,229 @@
 
 {% block body %}
   <main class="shell">
-    <section class="card wide-card">
-      <div class="eyebrow">Leadership dashboard</div>
-      <h1>Leadership dashboard</h1>
-      <p>Executive operating system for {{ dashboard.report_day.isoformat() }}.</p>
+    <div class="app-frame dashboard-shell">
+      <header class="app-topbar">
+        <div class="brand-lockup">
+          <span class="brand-lockup__meta">Operations report</span>
+          <span class="brand-lockup__title">Leadership cockpit</span>
+        </div>
+        <div class="topbar-meta">
+          <span class="meta-chip meta-chip--accent">VP Operations daily control</span>
+          <span class="meta-chip meta-chip--subtle mono">{{ dashboard.report_day.isoformat() }}</span>
+        </div>
+      </header>
 
-      <div class="action-row dashboard-actions">
-        <a class="button-link button-link--small" href="/recap">Open recap</a>
-        <a class="button-link button-link--small" href="/">Start entry</a>
-        <a class="button-link button-link--small" href="/manager?person_id=ricardo">Edit questions</a>
-        <a class="button-link button-link--small dashboard-execute" href="/execute-recap">Execute recap</a>
-      </div>
+      <section class="hero-card">
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <div class="eyebrow">Leadership dashboard</div>
+            <h1>Daily operating picture before the noise starts.</h1>
+            <p class="hero-subtitle">
+              Executive cockpit for {{ dashboard.report_day.isoformat() }}. Fast scan first, drill down second, execute recap when the story is clear.
+            </p>
+          </div>
+          <div class="hero-strip">
+            <article class="signal-card">
+              <span class="signal-card__label">Operating posture</span>
+              <strong class="signal-card__value">{{ dashboard.milwaukee_rollup.health }}</strong>
+              <p class="signal-card__detail">Milwaukee remains the highest-volume surface and sets the tone for the day.</p>
+            </article>
+            <article class="signal-card">
+              <span class="signal-card__label">Missing manager inputs</span>
+              <strong class="signal-card__value">{{ dashboard.kpis[1].value }}</strong>
+              <p class="signal-card__detail">Visible gaps stay surfaced so missing updates do not hide behind empty whitespace.</p>
+            </article>
+            <article class="signal-card">
+              <span class="signal-card__label">Escalations surfaced</span>
+              <strong class="signal-card__value">{{ dashboard.kpis[3].value }}</strong>
+              <p class="signal-card__detail">Leadership follow-ups pulled forward instead of buried inside report text.</p>
+            </article>
+          </div>
+        </div>
 
-      <div class="dashboard-top-grid">
-        <div class="question-block">
-          <label>KPI strip</label>
+        <div class="action-row" style="margin-top: 20px; position: relative; z-index: 1;">
+          <a class="button-link button-link--small" href="/recap">Open recap</a>
+          <a class="button-link button-link--small" href="/">Start entry</a>
+          <a class="button-link button-link--small" href="/manager?person_id=ricardo">Edit questions</a>
+          <a class="button-link button-link--small button-link--primary dashboard-execute" href="/execute-recap">Execute recap</a>
+        </div>
+      </section>
+
+      <section class="dashboard-top-grid">
+        <article class="question-block">
+          <div class="panel-header">
+            <div>
+              <div class="eyebrow">KPI strip</div>
+              <h2>Daily control signals</h2>
+            </div>
+            <span class="meta-chip meta-chip--subtle">Trusted scan layer</span>
+          </div>
           <div class="kpi-grid">
             {% for metric in dashboard.kpis %}
               <div class="kpi-card kpi-card--{{ metric.tone }}">
                 <span class="kpi-card__label">{{ metric.label }}</span>
                 <strong class="kpi-card__value">{{ metric.value }}</strong>
+                <span class="kpi-card__subtext">
+                  {% if metric.label == 'Reports in' %}
+                    Submitted updates currently shaping the readout.
+                  {% elif metric.label == 'Missing' %}
+                    People still missing from today’s operating picture.
+                  {% elif metric.label == 'Risks' %}
+                    Watch items leadership should not ignore.
+                  {% else %}
+                    Manager-assigned answers that likely need follow-through.
+                  {% endif %}
+                </span>
               </div>
             {% endfor %}
           </div>
-        </div>
+        </article>
 
-        <div class="question-block executive-brief">
-          <label>AI executive brief</label>
-          <div class="stack compact-stack">
+        <article class="question-block executive-brief">
+          <div class="panel-header">
+            <div>
+              <div class="eyebrow">AI executive brief</div>
+              <h2>What deserves leadership eyes first</h2>
+            </div>
+            <span class="meta-chip meta-chip--accent">Fast synthesis</span>
+          </div>
+          <ol class="brief-list">
             {% for bullet in dashboard.ai_brief %}
-              <div class="assignment-card">
-                <p class="no-margin">{{ bullet }}</p>
-              </div>
+              <li>{{ bullet }}</li>
             {% endfor %}
-          </div>
-        </div>
-      </div>
+          </ol>
+        </article>
+      </section>
 
-      <div class="question-block rollup-band">
-        <div class="assignment-card__header">
-          <div>
-            <label>Milwaukee roll-up</label>
-            <h2>{{ dashboard.milwaukee_rollup.owner.name }} • {{ dashboard.milwaukee_rollup.owner.role }}</h2>
+      <section class="rollup-band">
+        <div class="section-header">
+          <div class="section-header__title">
+            <div class="eyebrow">{{ dashboard.milwaukee_rollup.label }}</div>
+            <h2>{{ dashboard.milwaukee_rollup.owner.name }} — {{ dashboard.milwaukee_rollup.owner.role }}</h2>
+            <p class="section-subline">City-level control band for Milwaukee before drilling into function owners.</p>
           </div>
           <span class="status-pill status-pill--{{ dashboard.milwaukee_rollup.health|lower }}">{{ dashboard.milwaukee_rollup.health }}</span>
         </div>
-        <div class="stack compact-stack">
+        <div class="rollup-grid">
           {% for bullet in dashboard.milwaukee_rollup.bullets %}
-            <div class="assignment-card"><p class="no-margin">{{ bullet }}</p></div>
+            <article class="rollup-bullet">
+              <p class="memo-lead">{{ bullet }}</p>
+            </article>
           {% endfor %}
         </div>
-      </div>
+      </section>
 
-      <div class="section-stack">
+      <section class="section-stack">
         {% for section in dashboard.milwaukee_sections %}
-          <section class="question-block dashboard-section-block">
-            <div class="assignment-card__header">
-              <div>
-                <label>{{ section.section.label }}</label>
+          <article class="question-block dashboard-section-block">
+            <div class="section-header">
+              <div class="section-header__title">
+                <div class="eyebrow">{{ section.section.label }}</div>
                 <h2>{{ section.owner.name }} — {{ section.owner.role }}</h2>
+                <p class="section-subline">{{ section.summary }}</p>
               </div>
               <span class="status-pill status-pill--{{ section.health|lower }}">{{ section.health }}</span>
             </div>
 
             <div class="dashboard-priority-grid">
-              <div class="assignment-card">
-                <strong>Reported top 3 priorities</strong>
+              <section class="priority-panel priority-panel--reported">
+                <span class="section-meta">Reported top 3 priorities</span>
                 <ul class="bullet-list">
                   {% for item in section.reported_priorities %}
                     <li>{{ item }}</li>
                   {% endfor %}
                 </ul>
-              </div>
-              <div class="assignment-card">
-                <strong>AI-generated top 3 priorities</strong>
+              </section>
+              <section class="priority-panel priority-panel--ai">
+                <span class="section-meta">AI-generated top 3 priorities</span>
                 <ul class="bullet-list">
                   {% for item in section.ai_priorities %}
                     <li>{{ item }}</li>
                   {% endfor %}
                 </ul>
-              </div>
+              </section>
             </div>
 
             <div class="status-grid">
               {% for card in section.status_cards %}
-                <div class="assignment-card assignment-card--status assignment-card--{{ card.tone }}">
-                  <strong>{{ card.title }}</strong>
-                  <p class="no-margin">{{ card.detail }}</p>
-                </div>
+                <article class="status-card status-card--{{ card.tone }} assignment-card--status assignment-card--{{ card.tone }}">
+                  <span class="section-meta">{{ card.title }}</span>
+                  <strong>{{ card.detail }}</strong>
+                </article>
               {% endfor %}
             </div>
-            <p>{{ section.summary }}</p>
-          </section>
+          </article>
         {% endfor %}
-      </div>
+      </section>
 
-      <section class="question-block dashboard-section-block">
-        <div class="assignment-card__header">
-          <div>
-            <label>{{ dashboard.slc_section.section.label }}</label>
+      <article class="question-block dashboard-section-block">
+        <div class="section-header">
+          <div class="section-header__title">
+            <div class="eyebrow">{{ dashboard.slc_section.section.label }}</div>
             <h2>{{ dashboard.slc_section.owner.name }} — {{ dashboard.slc_section.owner.role }}</h2>
+            <p class="section-subline">{{ dashboard.slc_section.summary }}</p>
           </div>
           <span class="status-pill status-pill--{{ dashboard.slc_section.health|lower }}">{{ dashboard.slc_section.health }}</span>
         </div>
+
         <div class="dashboard-priority-grid">
-          <div class="assignment-card">
-            <strong>Reported top 3 priorities</strong>
+          <section class="priority-panel priority-panel--reported">
+            <span class="section-meta">Reported top 3 priorities</span>
             <ul class="bullet-list">
               {% for item in dashboard.slc_section.reported_priorities %}
                 <li>{{ item }}</li>
               {% endfor %}
             </ul>
-          </div>
-          <div class="assignment-card">
-            <strong>AI-generated top 3 priorities</strong>
+          </section>
+          <section class="priority-panel priority-panel--ai">
+            <span class="section-meta">AI-generated top 3 priorities</span>
             <ul class="bullet-list">
               {% for item in dashboard.slc_section.ai_priorities %}
                 <li>{{ item }}</li>
               {% endfor %}
             </ul>
-          </div>
+          </section>
         </div>
+
         <div class="status-grid">
           {% for card in dashboard.slc_section.status_cards %}
-            <div class="assignment-card assignment-card--status assignment-card--{{ card.tone }}">
-              <strong>{{ card.title }}</strong>
-              <p class="no-margin">{{ card.detail }}</p>
-            </div>
+            <article class="status-card status-card--{{ card.tone }} assignment-card--status assignment-card--{{ card.tone }}">
+              <span class="section-meta">{{ card.title }}</span>
+              <strong>{{ card.detail }}</strong>
+            </article>
           {% endfor %}
         </div>
-        <p>{{ dashboard.slc_section.summary }}</p>
-      </section>
+      </article>
 
-      <div class="dashboard-bottom-grid">
+      <section class="module-grid">
         {% for card in dashboard.integrations %}
-          <div class="question-block placeholder-block">
-            <label>{{ card.title }}</label>
-            <strong>{{ card.summary }}</strong>
-            <p>{{ card.detail }}</p>
-          </div>
+          <article class="module-card module-card--placeholder">
+            <div class="module-card__header">
+              <div>
+                <div class="eyebrow">{{ card.title }}</div>
+                <h3>{{ card.summary }}</h3>
+              </div>
+              <span class="meta-chip meta-chip--subtle">placeholder</span>
+            </div>
+            <p class="module-card__detail">{{ card.detail }}</p>
+            <div class="divider"></div>
+            <p class="helper">Built as a real surface now so the live integration can drop in without changing the cockpit structure later.</p>
+          </article>
         {% endfor %}
-        <div class="question-block placeholder-block">
-          <label>{{ dashboard.cpo_card.title }}</label>
-          <strong>{{ dashboard.cpo_card.summary }}</strong>
-          <p>{{ dashboard.cpo_card.detail }}</p>
-        </div>
-      </div>
-    </section>
+
+        <article class="module-card module-card--cpo">
+          <div class="module-card__header">
+            <div>
+              <div class="eyebrow">{{ dashboard.cpo_card.title }}</div>
+              <h3>{{ dashboard.cpo_card.summary }}</h3>
+            </div>
+            <span class="meta-chip meta-chip--warning">ops exception layer</span>
+          </div>
+          <p class="module-card__detail">{{ dashboard.cpo_card.detail }}</p>
+          <div class="divider"></div>
+          <p class="helper">Reserved for labor, out-of-SLA orders, and exception pressure once the App Script feed is wired.</p>
+        </article>
+      </section>
+    </div>
   </main>
 {% endblock %}

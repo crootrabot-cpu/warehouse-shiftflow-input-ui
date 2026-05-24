@@ -4,88 +4,176 @@
 
 {% block body %}
   <main class="shell">
-    <section class="card wide-card">
-      <div class="eyebrow">Executive recap review</div>
-      <h1>Executive recap review</h1>
-      <p>Review the drafted leadership summary before any email handoff.</p>
+    <div class="app-frame review-shell">
+      <header class="app-topbar">
+        <div class="brand-lockup">
+          <span class="brand-lockup__meta">Execute recap</span>
+          <span class="brand-lockup__title">Executive recap review</span>
+        </div>
+        <div class="topbar-meta">
+          <a class="button-link button-link--small" href="/dashboard">Back to dashboard</a>
+          <span class="meta-chip meta-chip--subtle mono">{{ executive_recap.report_day.isoformat() }}</span>
+        </div>
+      </header>
 
-      <div class="question-block">
-        <label>Quick top summary</label>
-        <ul class="bullet-list">
-          {% for bullet in executive_recap.top_summary %}
-            <li>{{ bullet }}</li>
-          {% endfor %}
-        </ul>
-      </div>
+      <section class="hero-card">
+        <div class="hero-grid hero-grid--balanced">
+          <div class="hero-copy">
+            <div class="eyebrow">Review-first workflow</div>
+            <h1>Sharpen the story before it turns into outbound communication.</h1>
+            <p class="hero-subtitle">This is the pre-email control surface. Short signal on top, supporting context underneath, and missing inputs kept visible.</p>
+          </div>
+          <article class="summary-card summary-card--spotlight">
+            <span class="summary-card__label">Quick top summary</span>
+            <ul class="bullet-list">
+              {% for bullet in executive_recap.top_summary %}
+                <li>{{ bullet }}</li>
+              {% endfor %}
+            </ul>
+          </article>
+        </div>
+      </section>
 
-      <div class="panel-grid">
-        <div class="question-block">
-          <label>Milwaukee summary</label>
-          <strong>{{ executive_recap.milwaukee_summary.owner.name }} • {{ executive_recap.milwaukee_summary.owner.role }}</strong>
+      <section class="summary-grid">
+        <article class="summary-card">
+          <div class="summary-card__header">
+            <div>
+              <div class="eyebrow">Milwaukee summary</div>
+              <h2>{{ executive_recap.milwaukee_summary.owner.name }} — {{ executive_recap.milwaukee_summary.owner.role }}</h2>
+            </div>
+            <span class="status-pill status-pill--{{ executive_recap.milwaukee_summary.health|lower }}">{{ executive_recap.milwaukee_summary.health }}</span>
+          </div>
           <ul class="bullet-list">
             {% for bullet in executive_recap.milwaukee_summary.bullets %}
               <li>{{ bullet }}</li>
             {% endfor %}
           </ul>
-        </div>
-        <div class="question-block">
-          <label>Salt Lake City summary</label>
-          <strong>{{ executive_recap.slc_summary.owner.name }} • {{ executive_recap.slc_summary.owner.role }}</strong>
+        </article>
+
+        <article class="summary-card">
+          <div class="summary-card__header">
+            <div>
+              <div class="eyebrow">Salt Lake City summary</div>
+              <h2>{{ executive_recap.slc_summary.owner.name }} — {{ executive_recap.slc_summary.owner.role }}</h2>
+            </div>
+            <span class="status-pill status-pill--{{ executive_recap.slc_summary.health|lower }}">{{ executive_recap.slc_summary.health }}</span>
+          </div>
           <ul class="bullet-list">
             {% for item in executive_recap.slc_summary.ai_priorities %}
               <li>{{ item }}</li>
             {% endfor %}
           </ul>
-        </div>
-      </div>
+        </article>
+      </section>
 
-      <div class="question-block">
-        <label>Employee report AI recap</label>
-        <ul class="bullet-list">
-          {% for bullet in executive_recap.employee_ai_recap %}
-            <li>{{ bullet }}</li>
-          {% endfor %}
-        </ul>
-      </div>
+      <section class="memo-grid">
+        <article class="memo-card">
+          <div class="panel-header">
+            <div>
+              <div class="eyebrow">Employee report AI recap</div>
+              <h2>Section-by-section synthesis</h2>
+            </div>
+            <span class="meta-chip meta-chip--accent">draft layer</span>
+          </div>
+          <div class="report-answer-grid">
+            {% for bullet in executive_recap.employee_ai_recap %}
+              <article class="report-answer-card">
+                <p class="memo-lead">{{ bullet }}</p>
+              </article>
+            {% endfor %}
+          </div>
+        </article>
 
-      <div class="panel-grid">
-        <div class="question-block">
-          <label>ClickUp AI recap</label>
-          <strong>{{ executive_recap.integration_cards[0].summary }}</strong>
-          <p>{{ executive_recap.integration_cards[0].detail }}</p>
-        </div>
-        <div class="question-block">
-          <label>Slack AI recap</label>
-          <strong>{{ executive_recap.integration_cards[1].summary }}</strong>
-          <p>{{ executive_recap.integration_cards[1].detail }}</p>
-        </div>
-      </div>
-      <div class="panel-grid">
-        <div class="question-block">
-          <label>Gmail AI recap</label>
-          <strong>{{ executive_recap.integration_cards[2].summary }}</strong>
-          <p>{{ executive_recap.integration_cards[2].detail }}</p>
-        </div>
-        <div class="question-block">
-          <label>{{ executive_recap.cpo_card.title }}</label>
-          <strong>{{ executive_recap.cpo_card.summary }}</strong>
-          <p>{{ executive_recap.cpo_card.detail }}</p>
-        </div>
-      </div>
+        <article class="memo-card">
+          <div class="panel-header">
+            <div>
+              <div class="eyebrow">Functional section snapshots</div>
+              <h2>Milwaukee operating lanes</h2>
+            </div>
+            <span class="meta-chip meta-chip--subtle">review before draft</span>
+          </div>
+          <div class="section-grid">
+            {% for section in executive_recap.milwaukee_sections %}
+              <article class="report-answer-card">
+                <span class="section-meta">{{ section.section.label }}</span>
+                <strong>{{ section.owner.name }} — {{ section.health }}</strong>
+                <p>{{ section.summary }}</p>
+              </article>
+            {% endfor %}
+          </div>
+        </article>
+      </section>
 
-      <div class="question-block">
-        <label>Missing inputs</label>
-        <div class="stack compact-stack">
+      <section class="module-grid">
+        <article class="module-card module-card--placeholder">
+          <div class="module-card__header">
+            <div>
+              <div class="eyebrow">ClickUp AI recap</div>
+              <h3>{{ executive_recap.integration_cards[0].summary }}</h3>
+            </div>
+            <span class="meta-chip meta-chip--subtle">placeholder</span>
+          </div>
+          <p class="module-card__detail">{{ executive_recap.integration_cards[0].detail }}</p>
+        </article>
+
+        <article class="module-card module-card--placeholder">
+          <div class="module-card__header">
+            <div>
+              <div class="eyebrow">Slack AI recap</div>
+              <h3>{{ executive_recap.integration_cards[1].summary }}</h3>
+            </div>
+            <span class="meta-chip meta-chip--subtle">placeholder</span>
+          </div>
+          <p class="module-card__detail">{{ executive_recap.integration_cards[1].detail }}</p>
+        </article>
+
+        <article class="module-card module-card--placeholder">
+          <div class="module-card__header">
+            <div>
+              <div class="eyebrow">Gmail AI recap</div>
+              <h3>{{ executive_recap.integration_cards[2].summary }}</h3>
+            </div>
+            <span class="meta-chip meta-chip--subtle">placeholder</span>
+          </div>
+          <p class="module-card__detail">{{ executive_recap.integration_cards[2].detail }}</p>
+        </article>
+
+        <article class="module-card module-card--cpo">
+          <div class="module-card__header">
+            <div>
+              <div class="eyebrow">{{ executive_recap.cpo_card.title }}</div>
+              <h3>{{ executive_recap.cpo_card.summary }}</h3>
+            </div>
+            <span class="meta-chip meta-chip--warning">exception layer</span>
+          </div>
+          <p class="module-card__detail">{{ executive_recap.cpo_card.detail }}</p>
+        </article>
+      </section>
+
+      <article class="question-block">
+        <div class="panel-header">
+          <div>
+            <div class="eyebrow">Missing inputs</div>
+            <h2>Visible gaps before draft handoff</h2>
+          </div>
+          <span class="meta-chip meta-chip--warning">{{ executive_recap.missing_people|length }} open</span>
+        </div>
+        <div class="status-grid">
           {% for person in executive_recap.missing_people %}
-            <div class="assignment-card assignment-card--inactive">
+            <article class="assignment-card assignment-card--inactive">
+              <span class="section-meta">Missing today</span>
               <strong>{{ person.name }}</strong>
               <p class="no-margin">{{ person.role }}</p>
-            </div>
+            </article>
           {% else %}
-            <p class="helper">No missing inputs for this report day.</p>
+            <article class="assignment-card">
+              <span class="section-meta">Clear</span>
+              <strong>No missing inputs for this report day.</strong>
+              <p class="no-margin">The executive draft can move forward without waiting on additional manager submissions.</p>
+            </article>
           {% endfor %}
         </div>
-      </div>
-    </section>
+      </article>
+    </div>
   </main>
 {% endblock %}
