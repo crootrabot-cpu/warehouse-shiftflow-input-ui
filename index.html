@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ShiftFlow — End of Day Input</title>
+  <meta name="description" content="Premium conversational end-of-day input prototype for warehouse teams." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <div class="ambient ambient-a"></div>
+    <div class="ambient ambient-b"></div>
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Warehouse EOD • premium prototype</p>
+        <h1>ShiftFlow</h1>
+      </div>
+      <div class="topbar-meta">
+        <span class="meta-pill">Interactive intake</span>
+        <span class="meta-pill subdued" id="currentDate"></span>
+      </div>
+    </header>
+
+    <main class="surface">
+      <section class="screen screen-picker active" id="pickerScreen">
+        <div class="intro-card glass-card">
+          <p class="mini-label">Simple on purpose</p>
+          <h2>Who’s checking out today?</h2>
+          <p class="lede">No dashboards. No forms. Just tap your name and answer the questions that matter.</p>
+          <div class="search-row">
+            <label class="search-box" aria-label="Search names">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.5 4a6.5 6.5 0 1 1 0 13a6.5 6.5 0 0 1 0-13Zm0 1.8a4.7 4.7 0 1 0 0 9.4a4.7 4.7 0 0 0 0-9.4Zm6.43 10.85l3.07 3.08l-1.27 1.27l-3.08-3.07z"/></svg>
+              <input id="nameSearch" type="text" placeholder="Search your name" autocomplete="off" />
+            </label>
+            <div class="picker-summary">
+              <span id="peopleCount">0 people</span>
+              <span>Assigned questions ready</span>
+            </div>
+          </div>
+          <div class="name-grid" id="nameGrid"></div>
+        </div>
+      </section>
+
+      <section class="screen screen-chat" id="chatScreen">
+        <div class="chat-layout">
+          <aside class="sidebar glass-card">
+            <div class="sidebar-block">
+              <p class="mini-label">Today’s check-out</p>
+              <h3 id="sidebarName">Marcus Hill</h3>
+              <p id="sidebarShift">Outbound lead • Day shift</p>
+            </div>
+            <div class="sidebar-block progress-block">
+              <div class="progress-copy">
+                <span>Progress</span>
+                <strong id="progressText">1 of 6</strong>
+              </div>
+              <div class="progress-bar">
+                <div id="progressFill"></div>
+              </div>
+              <p class="subtle-copy">One clean answer at a time.</p>
+            </div>
+            <div class="sidebar-block">
+              <p class="mini-label">Why this works</p>
+              <ul class="benefit-list">
+                <li>Zero clutter</li>
+                <li>Fast end-of-day flow</li>
+                <li>Answers stay readable</li>
+              </ul>
+            </div>
+            <button class="ghost-button" id="changePersonButton">Change person</button>
+          </aside>
+
+          <section class="chat-panel glass-card">
+            <div class="chat-header">
+              <div>
+                <p class="mini-label">Assigned questions</p>
+                <h3 id="chatTitle">How are we doing, Marcus?</h3>
+              </div>
+              <div class="header-badges">
+                <span class="meta-pill">One question at a time</span>
+                <span class="meta-pill subdued" id="questionTypeBadge">Mood</span>
+              </div>
+            </div>
+
+            <div class="transcript" id="transcript"></div>
+
+            <div class="composer-wrap">
+              <form class="composer" id="composerForm">
+                <div id="quickReplies" class="quick-replies"></div>
+                <div class="input-shell" id="textInputShell">
+                  <label class="composer-input-wrap">
+                    <textarea id="answerInput" rows="1" placeholder="Type your answer"></textarea>
+                    <span class="unit-label" id="unitLabel"></span>
+                  </label>
+                  <button type="submit" class="submit-button" id="submitButton">
+                    <span>Send</span>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.4 11.2L19.68 4.3c.9-.38 1.78.49 1.4 1.39L14.18 21.98c-.4.95-1.8.88-2.1-.1l-1.8-5.98l-5.98-1.8c-.98-.3-1.05-1.7-.1-2.1Zm3.9 1.56l4.28 1.28l1.29 4.28l4.62-10.9z"/></svg>
+                  </button>
+                </div>
+                <div class="composer-footer">
+                  <span id="helperText">Press Enter to continue</span>
+                  <span id="saveStatus">Local prototype only</span>
+                </div>
+              </form>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section class="screen screen-complete" id="completeScreen">
+        <div class="complete-card glass-card">
+          <div class="thumbs-up">👍</div>
+          <p class="mini-label">Done for today</p>
+          <h2 id="completeTitle">Have a good rest of your day, Marcus.</h2>
+          <p id="completeSummary">You answered 6 assigned questions. This is the kind of UI people will actually use.</p>
+          <div class="complete-actions">
+            <button class="primary-button" id="restartButton">Check out another person</button>
+            <button class="ghost-button" id="reviewAnswersButton">Review answers</button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="assets/app.js"></script>
+</body>
+</html>
