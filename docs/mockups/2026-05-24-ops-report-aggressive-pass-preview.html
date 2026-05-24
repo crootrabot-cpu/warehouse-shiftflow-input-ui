@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Operations Report — Aggressive Pass Preview</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #06070b;
+      --bg-2: #0b0f17;
+      --panel: rgba(15, 18, 28, 0.9);
+      --panel-2: rgba(20, 24, 36, 0.96);
+      --panel-3: rgba(28, 34, 49, 0.96);
+      --line: rgba(255,255,255,0.08);
+      --line-2: rgba(255,255,255,0.14);
+      --text: #f6f8fc;
+      --muted: #97a3ba;
+      --muted-2: #73809a;
+      --accent: #7386ff;
+      --accent-soft: rgba(115,134,255,0.16);
+      --good: #69d09c;
+      --good-soft: rgba(105,208,156,0.14);
+      --warn: #ffd079;
+      --warn-soft: rgba(255,208,121,0.14);
+      --bad: #ff9696;
+      --bad-soft: rgba(255,150,150,0.14);
+      --radius-sm: 14px;
+      --radius-md: 20px;
+      --radius-lg: 28px;
+      --shadow-1: 0 0 0 1px rgba(255,255,255,0.06);
+      --shadow-2: 0 20px 56px rgba(0,0,0,0.35);
+      --max: 1320px;
+    }
+    * { box-sizing: border-box; }
+    html {
+      min-height: 100%;
+      background:
+        radial-gradient(circle at top left, rgba(115,134,255,0.16), transparent 24%),
+        radial-gradient(circle at top right, rgba(255,255,255,0.05), transparent 22%),
+        linear-gradient(180deg, #0a0d14 0%, #06070b 100%);
+    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      letter-spacing: -0.01em;
+      background: transparent;
+    }
+    .shell {
+      width: min(100%, var(--max));
+      margin: 0 auto;
+      padding: 28px;
+      display: grid;
+      gap: 22px;
+    }
+    .topbar,
+    .panel,
+    .hero,
+    .band,
+    .kpi-card,
+    .section-card,
+    .repo-card,
+    .memo-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-1), var(--shadow-2);
+      backdrop-filter: blur(16px);
+    }
+    .topbar {
+      border-radius: 999px;
+      padding: 16px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .brand { display: grid; gap: 4px; }
+    .eyebrow {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--muted-2);
+      font-weight: 700;
+    }
+    .title-sm { font-size: 0.98rem; font-weight: 640; }
+    .chips, .actions, .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    .chip, .button {
+      min-height: 32px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      padding: 0 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text);
+      background: rgba(255,255,255,0.03);
+      text-decoration: none;
+    }
+    .chip.accent, .button.primary { background: var(--accent-soft); color: #d7ddff; }
+    .chip.good { background: var(--good-soft); color: #bff1d0; }
+    .chip.warn { background: var(--warn-soft); color: #ffe3a8; }
+    .chip.bad { background: var(--bad-soft); color: #ffc0c0; }
+    .hero {
+      border-radius: var(--radius-lg);
+      padding: 34px;
+      background: linear-gradient(180deg, rgba(18,22,35,0.96), rgba(8,10,16,0.98));
+      display: grid;
+      gap: 24px;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: 22px;
+    }
+    h1, h2, h3, p { margin: 0; }
+    h1 {
+      font-size: clamp(2.4rem, 5vw, 4.6rem);
+      line-height: 0.96;
+      letter-spacing: -0.05em;
+      font-weight: 680;
+      max-width: 12ch;
+    }
+    h2 {
+      font-size: 1.4rem;
+      line-height: 1.05;
+      letter-spacing: -0.04em;
+      font-weight: 640;
+    }
+    h3 {
+      font-size: 1rem;
+      line-height: 1.1;
+      font-weight: 620;
+    }
+    p { color: var(--muted); line-height: 1.6; }
+    .lede { max-width: 62ch; font-size: 1.02rem; }
+    .decision-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 14px;
+    }
+    .decision {
+      background: var(--panel-2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      display: grid;
+      gap: 8px;
+    }
+    .decision strong,
+    .metric strong,
+    .repo-path,
+    .number {
+      color: var(--text);
+    }
+    .number {
+      font-size: 2.35rem;
+      line-height: 1;
+      letter-spacing: -0.05em;
+      font-variant-numeric: tabular-nums;
+      font-weight: 700;
+    }
+    .grid-2, .grid-3, .grid-4 {
+      display: grid;
+      gap: 18px;
+    }
+    .grid-2 { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    .grid-3 { grid-template-columns: 1.15fr 1fr 1fr; }
+    .grid-4 { grid-template-columns: 1.3fr 1fr 1fr 1fr; }
+    .kpi-card {
+      border-radius: var(--radius-md);
+      padding: 20px;
+      display: grid;
+      gap: 10px;
+    }
+    .kpi-card.primary {
+      background: linear-gradient(180deg, rgba(44, 24, 24, 0.94), rgba(20, 12, 12, 0.96));
+      border-color: rgba(255,150,150,0.18);
+    }
+    .band, .panel, .memo-card, .repo-card, .section-card {
+      border-radius: var(--radius-md);
+      padding: 22px;
+      display: grid;
+      gap: 16px;
+    }
+    .band {
+      background: linear-gradient(90deg, rgba(17,21,33,0.98), rgba(28,34,49,0.94));
+    }
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .compare {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 14px;
+    }
+    .compare-col,
+    .status-tile,
+    .repo-card ul,
+    .memo-stack {
+      background: var(--panel-2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+    }
+    .compare-col, .memo-stack { padding: 16px; }
+    .compare-col ul, .repo-card ul, .memo-stack ul { margin: 0; padding-left: 18px; color: var(--muted); }
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 12px;
+    }
+    .status-tile { padding: 14px; display: grid; gap: 6px; }
+    .footer-stance {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding-top: 8px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+    .repo-layout {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      white-space: pre-wrap;
+      color: #d9def7;
+      background: rgba(9,11,17,0.86);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      line-height: 1.55;
+      font-size: 0.88rem;
+    }
+    .muted { color: var(--muted); }
+    .divider { height: 1px; background: var(--line); }
+    .callout {
+      border-left: 3px solid var(--accent);
+      padding-left: 12px;
+    }
+    @media (max-width: 1024px) {
+      .hero-grid, .grid-2, .grid-3, .grid-4, .compare, .status-grid { grid-template-columns: 1fr; }
+      h1 { max-width: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <span class="eyebrow">Operations report</span>
+        <span class="title-sm">Aggressive redesign + cleanup preview</span>
+      </div>
+      <div class="chips">
+        <span class="chip accent">Linear × Stripe cockpit</span>
+        <span class="chip">2026-05-24</span>
+        <span class="chip good">FastAPI is canonical</span>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="hero-grid">
+        <div class="panel" style="padding:0; background:transparent; border:none; box-shadow:none; gap:14px;">
+          <div class="eyebrow">Leadership control band</div>
+          <h1>Daily operating picture with the dead weight stripped out.</h1>
+          <p class="lede">This preview shows the combined move: sharpen the live executive cockpit and make the repo stop lying about which product surface is real.</p>
+          <div class="actions">
+            <span class="button">Open recap</span>
+            <span class="button">Start entry</span>
+            <span class="button">Edit questions</span>
+            <span class="button primary">Execute recap</span>
+          </div>
+        </div>
+        <div class="decision-grid">
+          <article class="decision">
+            <span class="eyebrow">Operating posture</span>
+            <strong>At risk</strong>
+            <p>Milwaukee outbound is carrying unresolved labor pressure into first wave.</p>
+          </article>
+          <article class="decision">
+            <span class="eyebrow">Biggest opportunity</span>
+            <strong>Rebalance cleanup</strong>
+            <p>Returns and inventory can absorb cleanup if outbound stays protected.</p>
+          </article>
+          <article class="decision">
+            <span class="eyebrow">Missing inputs</span>
+            <strong>2 still open</strong>
+            <p>Hugh and Adam are visible at the top, not buried lower in the page.</p>
+          </article>
+          <article class="decision">
+            <span class="eyebrow">Repo stance</span>
+            <strong>One app, one truth</strong>
+            <p>FastAPI templates stay active. Static experiments move to quarantined legacy.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid-4">
+      <article class="kpi-card primary">
+        <span class="eyebrow">Dominant KPI</span>
+        <div class="number">2</div>
+        <strong>Missing inputs</strong>
+        <p>Immediate leadership follow-up required before the page can be trusted.</p>
+      </article>
+      <article class="kpi-card">
+        <span class="eyebrow">Reports in</span>
+        <div class="number">6</div>
+        <p>Submitted updates currently shaping the operating readout.</p>
+      </article>
+      <article class="kpi-card">
+        <span class="eyebrow">Risks</span>
+        <div class="number">4</div>
+        <p>Watch items with enough signal to matter this morning.</p>
+      </article>
+      <article class="kpi-card">
+        <span class="eyebrow">Escalations</span>
+        <div class="number">3</div>
+        <p>Manager answers likely needing a leadership decision or follow-up.</p>
+      </article>
+    </section>
+
+    <section class="band">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">Milwaukee control band</div>
+          <h2>Ricardo — Milwaukee lead</h2>
+          <p>City-level command spine. This should frame the decision window, not just recap the city.</p>
+        </div>
+        <span class="chip bad">At risk</span>
+      </div>
+      <div class="grid-3">
+        <article class="memo-stack">
+          <span class="eyebrow">Observed</span>
+          <ul>
+            <li>Outbound labor pressure before first wave</li>
+            <li>Two sections aligned, one lagging</li>
+          </ul>
+        </article>
+        <article class="memo-stack">
+          <span class="eyebrow">Need now</span>
+          <ul>
+            <li>Confirm labor move by 8:30</li>
+            <li>Close the remaining manager gap</li>
+          </ul>
+        </article>
+        <article class="memo-stack">
+          <span class="eyebrow">Consequence</span>
+          <ul>
+            <li>10:00 wave becomes harder to protect if unresolved</li>
+            <li>Leadership recap becomes less trustworthy</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="grid-2">
+      <article class="section-card">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">Inventory</div>
+            <h2>Luis — Inventory</h2>
+            <p>Executive read: stable overall, but dock timing could create downstream friction by noon.</p>
+          </div>
+          <span class="chip good">Healthy</span>
+        </div>
+        <div class="compare">
+          <section class="compare-col">
+            <span class="eyebrow">Observed priorities</span>
+            <ul>
+              <li>Cycle count completion</li>
+              <li>Dock sequencing discipline</li>
+              <li>Short reconciliation backlog</li>
+            </ul>
+          </section>
+          <section class="compare-col">
+            <span class="eyebrow">Interpreted priorities</span>
+            <ul>
+              <li>Protect dock timing before noon</li>
+              <li>Keep backlog from leaking into outbound</li>
+              <li>Monitor only unless slippage grows</li>
+            </ul>
+          </section>
+        </div>
+        <div class="status-grid">
+          <article class="status-tile"><span class="eyebrow">Submitted</span><strong>5/5</strong></article>
+          <article class="status-tile"><span class="eyebrow">Risk</span><strong>Low</strong></article>
+          <article class="status-tile"><span class="eyebrow">Escalation</span><strong>None</strong></article>
+        </div>
+        <div class="footer-stance">
+          <span><strong>Leadership stance:</strong> Monitor only</span>
+          <span><strong>Next trigger:</strong> Escalate if dock slip exceeds 30 min</span>
+        </div>
+      </article>
+
+      <article class="memo-card">
+        <div>
+          <div class="eyebrow">Recap preview</div>
+          <h2>Management brief should read like a memo, not grouped submissions.</h2>
+        </div>
+        <div class="grid-3" style="grid-template-columns: repeat(3, minmax(0,1fr));">
+          <section class="memo-stack">
+            <span class="eyebrow">Do now</span>
+            <ul>
+              <li>Follow up with Hugh</li>
+              <li>Confirm Milwaukee labor move</li>
+              <li>Review outbound watch item</li>
+            </ul>
+          </section>
+          <section class="memo-stack">
+            <span class="eyebrow">Watch</span>
+            <ul>
+              <li>SLC stable but thin</li>
+              <li>Returns improving, no action yet</li>
+            </ul>
+          </section>
+          <section class="memo-stack">
+            <span class="eyebrow">Ignore for now</span>
+            <ul>
+              <li>Routine wins without escalation signal</li>
+              <li>Normal coverage updates</li>
+            </ul>
+          </section>
+        </div>
+        <p class="callout">Lower sections should compress repetition, surface corroboration, and make it obvious what leadership can safely ignore.</p>
+      </article>
+    </section>
+
+    <section class="grid-2">
+      <article class="repo-card">
+        <div>
+          <div class="eyebrow">Repo cleanup</div>
+          <h2>Canonical structure</h2>
+        </div>
+        <div class="repo-layout">warehouse-shiftflow-input-ui/
+├── app/
+├── templates/
+├── tests/
+├── docs/
+│   ├── work-computer-handoff.md
+│   ├── plans/
+│   └── superpowers/specs/
+├── legacy/
+│   └── experiments/
+│       └── operations-report-static/
+├── requirements.txt
+└── README.md</div>
+      </article>
+
+      <article class="repo-card">
+        <div>
+          <div class="eyebrow">Keep vs quarantine</div>
+          <h2>What survives and what gets moved</h2>
+        </div>
+        <div class="grid-2">
+          <section class="memo-stack">
+            <span class="eyebrow">Keep active</span>
+            <ul>
+              <li><span class="repo-path">app/</span></li>
+              <li><span class="repo-path">templates/</span></li>
+              <li><span class="repo-path">tests/</span></li>
+              <li><span class="repo-path">docs/</span></li>
+              <li><span class="repo-path">requirements.txt</span></li>
+            </ul>
+          </section>
+          <section class="memo-stack">
+            <span class="eyebrow">Quarantine</span>
+            <ul>
+              <li><span class="repo-path">operations-report.html</span></li>
+              <li><span class="repo-path">assets/operations-report-*</span></li>
+              <li><span class="repo-path">test/operations-report-state.test.mjs</span></li>
+              <li><span class="repo-path">shiftflow-state drift</span></li>
+            </ul>
+          </section>
+        </div>
+        <p>Move first, delete later. The repo should stop pretending the static experiment is equal to the live product.</p>
+      </article>
+    </section>
+  </main>
+</body>
+</html>
