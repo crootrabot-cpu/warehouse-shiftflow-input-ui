@@ -235,6 +235,15 @@ def dashboard(request: Request):
     )
 
 
+@app.get('/design-preview', response_class=HTMLResponse)
+def design_preview_page(request: Request):
+    return templates.TemplateResponse(
+        request=request,
+        name='design_preview.html',
+        context={},
+    )
+
+
 @app.get('/execute-recap', response_class=HTMLResponse)
 def execute_recap_page(request: Request):
     people = repository.list_people()

@@ -27,6 +27,18 @@ def test_root_route_returns_operations_report_intake_markers():
     assert '/manager?person_id=emily' in response.text
     assert '/dashboard' in response.text
     assert '/recap' in response.text
+    assert '/design-preview' in response.text
+
+
+def test_design_preview_route_renders_aggressive_pass_markers():
+    response = client.get('/design-preview')
+
+    assert response.status_code == 200
+    assert 'Aggressive redesign + cleanup preview' in response.text
+    assert 'Daily operating picture with the dead weight stripped out.' in response.text
+    assert 'Milwaukee control band' in response.text
+    assert 'Canonical structure' in response.text
+    assert 'FastAPI is canonical' in response.text
 
 
 def test_root_route_renders_real_org_roster_markers():
