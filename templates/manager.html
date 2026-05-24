@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block title %}Assign questions • Operations Report{% endblock %}
+
+{% block body %}
+  <main class="shell">
+    <section class="card wide-card">
+      <div class="eyebrow">Manager workflow • assign questions</div>
+      <h1>Assign questions</h1>
+      <p>{{ manager.name }} • {{ manager.role }}</p>
+
+      <div class="panel-grid manager-grid">
+        <div class="question-block">
+          <label>{% if selected_assignment %}Edit question{% else %}New question{% endif %}</label>
+          <p class="helper">Set daily or recurring prompts for the people you manage.</p>
+          <form class="picker" method="post" action="{% if selected_assignment %}/manager/assignments/{{ selected_assignment.id }}/edit{% else %}/manager/assignments{% endif %}">
+            <input type="hidden" name="created_by_person_id" value="{{ manager.id }}" />
+            <label for="assignedTo">Assign to</label>
+            <select id="assignedTo" name="assigned_to_person_id">
+              {% for person in assignable_people %}
+                <option value="{{ person.id }}" {% if selected_assignment and selected_assignment.assigned_to_person_id == person.id %}selected{% endif %}>{{ person.name }} — {{ person.role }} • {{ person.team }}</option>
+              {% endfor %}
+            </select>
+
+            <label for="prompt">Question prompt</label>
+            <textarea id="prompt" name="prompt" rows="3" placeholder="What needs executive help before 10 AM?">{% if selected_assignment %}{{ selected_assignment.prompt }}{% endif %}</textarea>
+
+            <label for="answerType">Answer type</label>
+            <select id="answerType" name="answer_type">
+              <option value="text" {% if selected_assignment and selected_assignment.answer_type == 'text' %}selected{% endif %}>Short answer</option>
+              <option value="textarea" {% if selected_assignment and selected_assignment.answer_type == 'textarea' %}selected{% endif %}>Long answer</option>
+              <option value="choice" {% if selected_assignment and selected_assignment.answer_type == 'choice' %}selected{% endif %}>Quick choice</option>
+              <option value="yesno" {% if selected_assignment and selected_assignment.answer_type == 'yesno' %}selected{% endif %}>Yes / No</option>
+            </select>
+
+            <label for="helperText">Helper text</label>
+            <input id="helperText" name="helper_text" type="text" placeholder="One clean escalation only." value="{% if selected_assignment %}{{ selected_assignment.helper_text }}{% endif %}" />
+
+            <label for="cadence">Cadence</label>
+            <select id="cadence" name="cadence">
+              <option value="today" {% if selected_assignment and selected_assignment.cadence == 'today' %}selected{% endif %}>Today only</option>
+              <option value="daily" {% if not selected_assignment or selected_assignment.cadence == 'daily' %}selected{% endif %}>Daily recurring</option>
+              <option value="weekdays" {% if selected_assignment and selected_assignment.cadence == 'weekdays' %}selected{% endif %}>Weekdays</option>
+            </select>
+
+            <button type="submit">{% if selected_assignment %}Save question{% else %}Assign question{% endif %}</button>
+            {% if selected_assignment %}
+              <a class="button-link" href="/manager?person_id={{ manager.id }}">Start a fresh question</a>
+            {% endif %}
+          </form>
+        </div>
+
+        <div class="question-block">
+          <label>Current assignments</label>
+          <p class="helper">Daily question control for your team.</p>
+          <div class="stack compact-stack">
+            {% for assignment in assignments %}
+              {% set target = people_by_id[assignment.assigned_to_person_id] %}
+              <div class="assignment-card {% if not assignment.active %}assignment-card--inactive{% endif %}">
+                <div class="assignment-card__header">
+                  <div>
+                    <strong>{{ target.name }} — {{ target.role }}</strong>
+                    <p class="helper no-margin">{{ assignment.prompt }}</p>
+                  </div>
+                  <span class="status-pill {% if assignment.active %}status-pill--active{% else %}status-pill--inactive{% endif %}">{% if assignment.active %}Active{% else %}Inactive{% endif %}</span>
+                </div>
+                <p class="helper no-margin">{{ assignment.helper_text or 'No helper text.' }}</p>
+                <p class="helper no-margin">{{ assignment.answer_type }} • {{ assignment.cadence }}</p>
+                <div class="action-row">
+                  <a class="button-link button-link--small" href="/manager?person_id={{ manager.id }}&assignment_id={{ assignment.id }}">Edit question</a>
+                  {% if assignment.active %}
+                    <form method="post" action="/manager/assignments/{{ assignment.id }}/pause">
+                      <input type="hidden" name="created_by_person_id" value="{{ manager.id }}" />
+                      <button class="button-secondary button-small" type="submit">Pause question</button>
+                    </form>
+                  {% else %}
+                    <form method="post" action="/manager/assignments/{{ assignment.id }}/resume">
+                      <input type="hidden" name="created_by_person_id" value="{{ manager.id }}" />
+                      <button class="button-secondary button-small" type="submit">Resume question</button>
+                    </form>
+                  {% endif %}
+                </div>
+              </div>
+            {% else %}
+              <p class="helper">No assigned questions yet.</p>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+{% endblock %}

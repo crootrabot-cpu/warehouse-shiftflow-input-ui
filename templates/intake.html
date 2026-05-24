@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Operations Report{% endblock %}
+
+{% block body %}
+  <main class="shell">
+    <section class="card">
+      <div class="eyebrow">Operations Report • intake</div>
+      <h1>Operations Report</h1>
+      <p>Fast end-of-day input for the floor, with a real morning read layer for management.</p>
+
+      <div class="panel-grid">
+        <div class="question-block">
+          <label>Submit my report</label>
+          <p class="helper">Pick your name and complete your end-of-day handoff.</p>
+          <form class="picker" method="get" action="/reports/new">
+            <label for="personId">Choose your name</label>
+            <select id="personId" name="person_id">
+              {% for person in people %}
+                <option value="{{ person.id }}">{{ person.name }} — {{ person.role }} • {{ person.team }}</option>
+              {% endfor %}
+            </select>
+            <button type="submit">Start report</button>
+          </form>
+        </div>
+
+        <div class="question-block">
+          <label>Manage questions</label>
+          <p class="helper">Leadership can set, edit, pause, and review daily questions from the same app.</p>
+          <div class="stack compact-stack">
+            {% for manager in managers %}
+              <a class="button-link" href="/manager?person_id={{ manager.id }}">{{ manager.name }} — {{ manager.role }}</a>
+            {% endfor %}
+            <a class="button-link" href="/dashboard">Morning dashboard</a>
+            <a class="button-link" href="/recap">End-of-day recap</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+{% endblock %}

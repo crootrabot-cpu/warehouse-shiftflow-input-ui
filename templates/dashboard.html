@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+
+{% block title %}Leadership dashboard • Operations Report{% endblock %}
+
+{% block body %}
+  <main class="shell">
+    <section class="card wide-card">
+      <div class="eyebrow">Leadership dashboard</div>
+      <h1>Leadership dashboard</h1>
+      <p>Executive operating system for {{ dashboard.report_day.isoformat() }}.</p>
+
+      <div class="action-row dashboard-actions">
+        <a class="button-link button-link--small" href="/recap">Open recap</a>
+        <a class="button-link button-link--small" href="/">Start entry</a>
+        <a class="button-link button-link--small" href="/manager?person_id=ricardo">Edit questions</a>
+        <a class="button-link button-link--small dashboard-execute" href="/execute-recap">Execute recap</a>
+      </div>
+
+      <div class="dashboard-top-grid">
+        <div class="question-block">
+          <label>KPI strip</label>
+          <div class="kpi-grid">
+            {% for metric in dashboard.kpis %}
+              <div class="kpi-card kpi-card--{{ metric.tone }}">
+                <span class="kpi-card__label">{{ metric.label }}</span>
+                <strong class="kpi-card__value">{{ metric.value }}</strong>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="question-block executive-brief">
+          <label>AI executive brief</label>
+          <div class="stack compact-stack">
+            {% for bullet in dashboard.ai_brief %}
+              <div class="assignment-card">
+                <p class="no-margin">{{ bullet }}</p>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <div class="question-block rollup-band">
+        <div class="assignment-card__header">
+          <div>
+            <label>Milwaukee roll-up</label>
+            <h2>{{ dashboard.milwaukee_rollup.owner.name }} • {{ dashboard.milwaukee_rollup.owner.role }}</h2>
+          </div>
+          <span class="status-pill status-pill--{{ dashboard.milwaukee_rollup.health|lower }}">{{ dashboard.milwaukee_rollup.health }}</span>
+        </div>
+        <div class="stack compact-stack">
+          {% for bullet in dashboard.milwaukee_rollup.bullets %}
+            <div class="assignment-card"><p class="no-margin">{{ bullet }}</p></div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="section-stack">
+        {% for section in dashboard.milwaukee_sections %}
+          <section class="question-block dashboard-section-block">
+            <div class="assignment-card__header">
+              <div>
+                <label>{{ section.section.label }}</label>
+                <h2>{{ section.owner.name }} — {{ section.owner.role }}</h2>
+              </div>
+              <span class="status-pill status-pill--{{ section.health|lower }}">{{ section.health }}</span>
+            </div>
+
+            <div class="dashboard-priority-grid">
+              <div class="assignment-card">
+                <strong>Reported top 3 priorities</strong>
+                <ul class="bullet-list">
+                  {% for item in section.reported_priorities %}
+                    <li>{{ item }}</li>
+                  {% endfor %}
+                </ul>
+              </div>
+              <div class="assignment-card">
+                <strong>AI-generated top 3 priorities</strong>
+                <ul class="bullet-list">
+                  {% for item in section.ai_priorities %}
+                    <li>{{ item }}</li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+
+            <div class="status-grid">
+              {% for card in section.status_cards %}
+                <div class="assignment-card assignment-card--status assignment-card--{{ card.tone }}">
+                  <strong>{{ card.title }}</strong>
+                  <p class="no-margin">{{ card.detail }}</p>
+                </div>
+              {% endfor %}
+            </div>
+            <p>{{ section.summary }}</p>
+          </section>
+        {% endfor %}
+      </div>
+
+      <section class="question-block dashboard-section-block">
+        <div class="assignment-card__header">
+          <div>
+            <label>{{ dashboard.slc_section.section.label }}</label>
+            <h2>{{ dashboard.slc_section.owner.name }} — {{ dashboard.slc_section.owner.role }}</h2>
+          </div>
+          <span class="status-pill status-pill--{{ dashboard.slc_section.health|lower }}">{{ dashboard.slc_section.health }}</span>
+        </div>
+        <div class="dashboard-priority-grid">
+          <div class="assignment-card">
+            <strong>Reported top 3 priorities</strong>
+            <ul class="bullet-list">
+              {% for item in dashboard.slc_section.reported_priorities %}
+                <li>{{ item }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+          <div class="assignment-card">
+            <strong>AI-generated top 3 priorities</strong>
+            <ul class="bullet-list">
+              {% for item in dashboard.slc_section.ai_priorities %}
+                <li>{{ item }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+        <div class="status-grid">
+          {% for card in dashboard.slc_section.status_cards %}
+            <div class="assignment-card assignment-card--status assignment-card--{{ card.tone }}">
+              <strong>{{ card.title }}</strong>
+              <p class="no-margin">{{ card.detail }}</p>
+            </div>
+          {% endfor %}
+        </div>
+        <p>{{ dashboard.slc_section.summary }}</p>
+      </section>
+
+      <div class="dashboard-bottom-grid">
+        {% for card in dashboard.integrations %}
+          <div class="question-block placeholder-block">
+            <label>{{ card.title }}</label>
+            <strong>{{ card.summary }}</strong>
+            <p>{{ card.detail }}</p>
+          </div>
+        {% endfor %}
+        <div class="question-block placeholder-block">
+          <label>{{ dashboard.cpo_card.title }}</label>
+          <strong>{{ dashboard.cpo_card.summary }}</strong>
+          <p>{{ dashboard.cpo_card.detail }}</p>
+        </div>
+      </div>
+    </section>
+  </main>
+{% endblock %}

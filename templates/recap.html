@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block title %}End-of-day recap • Operations Report{% endblock %}
+
+{% block body %}
+  <main class="shell">
+    <section class="card wide-card">
+      <div class="eyebrow">End-of-day recap</div>
+      <h1>End-of-day recap</h1>
+      <p>Clean management brief for {{ recap.report_day.isoformat() }}.</p>
+
+      <div class="panel-grid manager-grid">
+        <div class="question-block">
+          <label>Submitted today</label>
+          <p class="helper">{{ recap.submitted|length }} reports received.</p>
+          <div class="stack compact-stack">
+            {% for item in recap.submitted %}
+              <div class="assignment-card">
+                <div class="assignment-card__header">
+                  <div>
+                    <strong>{{ item.person.name }}</strong>
+                    <p class="helper no-margin">{{ item.person.role }} • {{ item.person.team }}</p>
+                  </div>
+                </div>
+                <p class="helper no-margin">Win</p>
+                <p>{{ item.report.summary_text or 'No win summary submitted.' }}</p>
+                {% if item.risk_answer %}
+                  <p class="helper no-margin">Watch</p>
+                  <p>{{ item.risk_answer.answer_value }}</p>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="question-block">
+          <label>Missing today</label>
+          <p class="helper">{{ recap.missing|length }} people still missing.</p>
+          <div class="stack compact-stack">
+            {% for person in recap.missing %}
+              <div class="assignment-card assignment-card--inactive">
+                <strong>{{ person.name }}</strong>
+                <p class="helper no-margin">{{ person.role }} • {{ person.team }}</p>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-grid manager-grid">
+        <div class="question-block">
+          <label>Top wins</label>
+          <div class="stack compact-stack">
+            {% for item in recap.top_wins %}
+              <div class="assignment-card">
+                <strong>{{ item.person.name }}</strong>
+                <p class="helper no-margin">{{ item.report.summary_text }}</p>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="question-block">
+          <label>Top risks</label>
+          <div class="stack compact-stack">
+            {% for person, answer in recap.top_risks %}
+              <div class="assignment-card">
+                <strong>{{ person.name }}</strong>
+                <p class="helper no-margin">{{ answer.answer_value }}</p>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <div class="question-block">
+        <label>Assigned question answers</label>
+        <p class="helper">Focused follow-up answers that need leadership eyes.</p>
+        <div class="stack compact-stack">
+          {% for person, answer in recap.assigned_follow_ups %}
+            <div class="assignment-card">
+              <strong>{{ person.name }}</strong>
+              <p class="helper no-margin">{{ answer.question_text }}</p>
+              <p>{{ answer.answer_value }}</p>
+            </div>
+          {% else %}
+            <p class="helper">No assigned follow-up answers submitted yet.</p>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+  </main>
+{% endblock %}

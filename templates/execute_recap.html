@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block title %}Executive recap review • Operations Report{% endblock %}
+
+{% block body %}
+  <main class="shell">
+    <section class="card wide-card">
+      <div class="eyebrow">Executive recap review</div>
+      <h1>Executive recap review</h1>
+      <p>Review the drafted leadership summary before any email handoff.</p>
+
+      <div class="question-block">
+        <label>Quick top summary</label>
+        <ul class="bullet-list">
+          {% for bullet in executive_recap.top_summary %}
+            <li>{{ bullet }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="panel-grid">
+        <div class="question-block">
+          <label>Milwaukee summary</label>
+          <strong>{{ executive_recap.milwaukee_summary.owner.name }} • {{ executive_recap.milwaukee_summary.owner.role }}</strong>
+          <ul class="bullet-list">
+            {% for bullet in executive_recap.milwaukee_summary.bullets %}
+              <li>{{ bullet }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        <div class="question-block">
+          <label>Salt Lake City summary</label>
+          <strong>{{ executive_recap.slc_summary.owner.name }} • {{ executive_recap.slc_summary.owner.role }}</strong>
+          <ul class="bullet-list">
+            {% for item in executive_recap.slc_summary.ai_priorities %}
+              <li>{{ item }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+
+      <div class="question-block">
+        <label>Employee report AI recap</label>
+        <ul class="bullet-list">
+          {% for bullet in executive_recap.employee_ai_recap %}
+            <li>{{ bullet }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="panel-grid">
+        <div class="question-block">
+          <label>ClickUp AI recap</label>
+          <strong>{{ executive_recap.integration_cards[0].summary }}</strong>
+          <p>{{ executive_recap.integration_cards[0].detail }}</p>
+        </div>
+        <div class="question-block">
+          <label>Slack AI recap</label>
+          <strong>{{ executive_recap.integration_cards[1].summary }}</strong>
+          <p>{{ executive_recap.integration_cards[1].detail }}</p>
+        </div>
+      </div>
+      <div class="panel-grid">
+        <div class="question-block">
+          <label>Gmail AI recap</label>
+          <strong>{{ executive_recap.integration_cards[2].summary }}</strong>
+          <p>{{ executive_recap.integration_cards[2].detail }}</p>
+        </div>
+        <div class="question-block">
+          <label>{{ executive_recap.cpo_card.title }}</label>
+          <strong>{{ executive_recap.cpo_card.summary }}</strong>
+          <p>{{ executive_recap.cpo_card.detail }}</p>
+        </div>
+      </div>
+
+      <div class="question-block">
+        <label>Missing inputs</label>
+        <div class="stack compact-stack">
+          {% for person in executive_recap.missing_people %}
+            <div class="assignment-card assignment-card--inactive">
+              <strong>{{ person.name }}</strong>
+              <p class="no-margin">{{ person.role }}</p>
+            </div>
+          {% else %}
+            <p class="helper">No missing inputs for this report day.</p>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+  </main>
+{% endblock %}
