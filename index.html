@@ -20,28 +20,144 @@
         <h1>ShiftFlow</h1>
       </div>
       <div class="topbar-meta">
-        <span class="meta-pill">Interactive intake</span>
+        <span class="meta-pill">Same-page reporting + manager asks</span>
         <span class="meta-pill subdued" id="currentDate"></span>
       </div>
     </header>
 
     <main class="surface">
       <section class="screen screen-picker active" id="pickerScreen">
-        <div class="intro-card glass-card">
-          <p class="mini-label">Simple on purpose</p>
-          <h2>Who’s checking out today?</h2>
-          <p class="lede">No dashboards. No forms. Just tap your name and answer the questions that matter.</p>
-          <div class="search-row">
-            <label class="search-box" aria-label="Search names">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.5 4a6.5 6.5 0 1 1 0 13a6.5 6.5 0 0 1 0-13Zm0 1.8a4.7 4.7 0 1 0 0 9.4a4.7 4.7 0 0 0 0-9.4Zm6.43 10.85l3.07 3.08l-1.27 1.27l-3.08-3.07z"/></svg>
-              <input id="nameSearch" type="text" placeholder="Search your name" autocomplete="off" />
-            </label>
-            <div class="picker-summary">
-              <span id="peopleCount">0 people</span>
-              <span>Assigned questions ready</span>
+        <div class="workspace-grid">
+          <div class="intro-card glass-card">
+            <div class="picker-head">
+              <div>
+                <p class="mini-label">One page, two jobs</p>
+                <h2 id="pickerTitle">Who’s checking out today?</h2>
+                <p class="lede" id="pickerLede">No dashboards. No forms. Just tap your name and answer the questions that matter.</p>
+              </div>
+              <div class="mode-toggle" role="tablist" aria-label="Workflow mode">
+                <button class="mode-pill active" id="reportModeButton" type="button" aria-pressed="true">Put in a report</button>
+                <button class="mode-pill" id="assignModeButton" type="button" aria-pressed="false">Ask a question</button>
+              </div>
             </div>
+
+            <div class="search-row">
+              <label class="search-box" aria-label="Search names">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.5 4a6.5 6.5 0 1 1 0 13a6.5 6.5 0 0 1 0-13Zm0 1.8a4.7 4.7 0 1 0 0 9.4a4.7 4.7 0 0 0 0-9.4Zm6.43 10.85l3.07 3.08l-1.27 1.27l-3.08-3.07z"/></svg>
+                <input id="nameSearch" type="text" placeholder="Search your name" autocomplete="off" />
+              </label>
+              <div class="picker-summary">
+                <span id="peopleCount">0 people</span>
+                <span id="peopleSummaryLabel">Assigned questions ready</span>
+              </div>
+            </div>
+
+            <div class="name-grid" id="nameGrid"></div>
           </div>
-          <div class="name-grid" id="nameGrid"></div>
+
+          <aside class="builder-card glass-card" id="builderCard">
+            <div class="builder-empty" id="builderEmpty">
+              <p class="mini-label">Manager question builder</p>
+              <h3 id="builderEmptyTitle">Ask better follow-up questions.</h3>
+              <p id="builderEmptyCopy">Switch to <strong>Ask a question</strong>, pick a manager, and build a lightweight prompt that drops straight into that person’s end-of-day flow.</p>
+              <ul class="builder-empty-list">
+                <li>Only managers can assign</li>
+                <li>Questions route by reporting tree</li>
+                <li>Today-only, weekdays, or custom days</li>
+              </ul>
+            </div>
+
+            <div class="builder-content hidden" id="builderContent">
+              <div class="builder-header">
+                <div>
+                  <p class="mini-label">Manager question builder</p>
+                  <h3 id="builderTitle">Ask a question</h3>
+                </div>
+                <span class="meta-pill subdued" id="builderScopeCount">0 people</span>
+              </div>
+
+              <p class="builder-lede" id="builderLead">Select a manager on the left to start assigning questions.</p>
+              <div class="manager-chip-row" id="managerScope"></div>
+
+              <form class="assignment-form" id="assignmentForm">
+                <label class="field-block">
+                  <span>Question goes to</span>
+                  <select id="assignmentTarget"></select>
+                </label>
+
+                <div class="field-grid two-up">
+                  <label class="field-block">
+                    <span>Answer type</span>
+                    <select id="assignmentType">
+                      <option value="text">Short answer</option>
+                      <option value="textarea">Long answer</option>
+                      <option value="number">Number</option>
+                      <option value="choice">Dropdown / choice</option>
+                      <option value="yesno">Yes / No</option>
+                    </select>
+                  </label>
+
+                  <label class="field-block">
+                    <span>When should it show up?</span>
+                    <select id="assignmentCadence">
+                      <option value="today">Today only</option>
+                      <option value="daily">Every day</option>
+                      <option value="weekdays">Weekdays</option>
+                      <option value="custom">Custom days</option>
+                    </select>
+                  </label>
+                </div>
+
+                <div class="field-block hidden" id="customDaysShell">
+                  <span>Custom days</span>
+                  <div class="day-chip-grid" id="customDaysGrid">
+                    <button type="button" class="day-chip" data-day="mon">Mon</button>
+                    <button type="button" class="day-chip" data-day="tue">Tue</button>
+                    <button type="button" class="day-chip" data-day="wed">Wed</button>
+                    <button type="button" class="day-chip" data-day="thu">Thu</button>
+                    <button type="button" class="day-chip" data-day="fri">Fri</button>
+                    <button type="button" class="day-chip" data-day="sat">Sat</button>
+                    <button type="button" class="day-chip" data-day="sun">Sun</button>
+                  </div>
+                </div>
+
+                <label class="field-block">
+                  <span>Question prompt</span>
+                  <textarea id="assignmentPrompt" rows="3" placeholder="Example: What’s the one thing leadership should unblock tomorrow?"></textarea>
+                </label>
+
+                <label class="field-block">
+                  <span>Helper text <em>(optional)</em></span>
+                  <input id="assignmentHelper" type="text" placeholder="Example: Keep it direct." />
+                </label>
+
+                <label class="field-block">
+                  <span>Placeholder <em>(optional)</em></span>
+                  <input id="assignmentPlaceholder" type="text" placeholder="Example: One clean sentence" />
+                </label>
+
+                <label class="field-block hidden" id="assignmentOptionsShell">
+                  <span>Choice options</span>
+                  <textarea id="assignmentOptions" rows="3" placeholder="One option per line&#10;Fully covered&#10;Tight but okay&#10;Understaffed"></textarea>
+                </label>
+
+                <div class="preview-strip" id="targetPreview">Target’s report will show default questions first, then this add-on.</div>
+
+                <div class="form-actions">
+                  <button class="primary-button" type="submit" id="assignmentSubmitButton">Add question</button>
+                  <span class="builder-status" id="builderStatus">Local prototype only</span>
+                </div>
+              </form>
+
+              <div class="assigned-list-wrap">
+                <div class="assigned-list-head">
+                  <p class="mini-label">Active assigned questions</p>
+                  <span class="subtle-copy" id="assignmentListSummary">Nothing assigned yet.</span>
+                </div>
+                <div class="assigned-list" id="assignmentList"></div>
+              </div>
+            </div>
+          </aside>
         </div>
       </section>
 
@@ -50,13 +166,13 @@
           <aside class="sidebar glass-card">
             <div class="sidebar-block">
               <p class="mini-label">Today’s check-out</p>
-              <h3 id="sidebarName">Marcus Hill</h3>
-              <p id="sidebarShift">Outbound lead • Day shift</p>
+              <h3 id="sidebarName">Drake</h3>
+              <p id="sidebarShift">Executive lead • Founder mode</p>
             </div>
             <div class="sidebar-block progress-block">
               <div class="progress-copy">
                 <span>Progress</span>
-                <strong id="progressText">1 of 6</strong>
+                <strong id="progressText">1 of 3</strong>
               </div>
               <div class="progress-bar">
                 <div id="progressFill"></div>
@@ -64,25 +180,25 @@
               <p class="subtle-copy">One clean answer at a time.</p>
             </div>
             <div class="sidebar-block">
-              <p class="mini-label">Why this works</p>
+              <p class="mini-label">Flow guardrails</p>
               <ul class="benefit-list">
-                <li>Zero clutter</li>
-                <li>Fast end-of-day flow</li>
-                <li>Answers stay readable</li>
+                <li>Default questions stay consistent</li>
+                <li>Manager asks drop in after the base flow</li>
+                <li>No dead-end form clutter</li>
               </ul>
             </div>
-            <button class="ghost-button" id="changePersonButton">Change person</button>
+            <button class="ghost-button" id="changePersonButton">Back to home</button>
           </aside>
 
           <section class="chat-panel glass-card">
             <div class="chat-header">
               <div>
                 <p class="mini-label">Assigned questions</p>
-                <h3 id="chatTitle">How are we doing, Marcus?</h3>
+                <h3 id="chatTitle">End-of-day check-out</h3>
               </div>
               <div class="header-badges">
-                <span class="meta-pill">One question at a time</span>
-                <span class="meta-pill subdued" id="questionTypeBadge">Mood</span>
+                <span class="meta-pill" id="questionSourceBadge">Default flow</span>
+                <span class="meta-pill subdued" id="questionTypeBadge">Short answer</span>
               </div>
             </div>
 
@@ -115,8 +231,8 @@
         <div class="complete-card glass-card">
           <div class="thumbs-up">👍</div>
           <p class="mini-label">Done for today</p>
-          <h2 id="completeTitle">Have a good rest of your day, Marcus.</h2>
-          <p id="completeSummary">You answered 6 assigned questions. This is the kind of UI people will actually use.</p>
+          <h2 id="completeTitle">Have a good rest of your day.</h2>
+          <p id="completeSummary">You answered the assigned questions with almost no busy work.</p>
           <div class="complete-actions">
             <button class="primary-button" id="restartButton">Check out another person</button>
             <button class="ghost-button" id="reviewAnswersButton">Review answers</button>
@@ -126,6 +242,6 @@
     </main>
   </div>
 
-  <script src="assets/app.js"></script>
+  <script type="module" src="assets/app.js"></script>
 </body>
 </html>
