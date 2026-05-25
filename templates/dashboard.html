@@ -5,41 +5,50 @@
 {% block body %}
   <main class="shell">
     <div class="app-frame dashboard-shell">
-      <header class="app-topbar">
+      <header class="app-topbar" data-ui="dashboard-nav">
         <div class="brand-lockup">
           <span class="brand-lockup__meta">Operations report</span>
-          <span class="brand-lockup__title">Leadership cockpit</span>
+          <span class="brand-lockup__title">Executive command deck</span>
         </div>
-        <div class="topbar-meta">
-          <span class="meta-chip meta-chip--accent">VP Operations daily control</span>
+        <div class="topbar-meta topbar-nav">
+          <span class="meta-chip meta-chip--accent">Daily control</span>
           <span class="meta-chip meta-chip--subtle mono">{{ dashboard.report_day.isoformat() }}</span>
+          <a class="button-link button-link--small" href="/recap">Recap</a>
+          <a class="button-link button-link--small" href="/">Entry</a>
         </div>
       </header>
 
       <section class="hero-card">
         <div class="hero-grid">
           <div class="hero-copy">
-            <div class="eyebrow">Leadership dashboard</div>
-            <h1>Daily operating picture before the noise starts.</h1>
+            <div class="eyebrow">Command view</div>
+            <h1>Daily operating picture with less chrome, tighter hierarchy, and real control signals.</h1>
             <p class="hero-subtitle">
-              Executive cockpit for {{ dashboard.report_day.isoformat() }}. Fast scan first, drill down second, execute recap when the story is clear.
+              Repo palette, cleaner surfaces, stronger graphs, and a sharper reading order: scan posture, confirm risks, then decide where leadership attention goes.
             </p>
+            <div class="dashboard-nav-band">
+              <span class="meta-chip meta-chip--subtle">Overview</span>
+              <span class="meta-chip meta-chip--subtle">Signals</span>
+              <span class="meta-chip meta-chip--subtle">Graphs</span>
+              <span class="meta-chip meta-chip--subtle">Control band</span>
+              <span class="meta-chip meta-chip--subtle">Section drilldowns</span>
+            </div>
           </div>
           <div class="hero-strip">
-            <article class="signal-card">
+            <article class="signal-card signal-card--accent">
               <span class="signal-card__label">Operating posture</span>
               <strong class="signal-card__value">{{ dashboard.milwaukee_rollup.health }}</strong>
-              <p class="signal-card__detail">Milwaukee remains the highest-volume surface and sets the tone for the day.</p>
+              <p class="signal-card__detail">Milwaukee still sets the tone for the day, so that control band leads the page.</p>
             </article>
             <article class="signal-card">
               <span class="signal-card__label">Missing manager inputs</span>
               <strong class="signal-card__value">{{ dashboard.kpis[1].value }}</strong>
-              <p class="signal-card__detail">Visible gaps stay surfaced so missing updates do not hide behind empty whitespace.</p>
+              <p class="signal-card__detail">Gaps stay loud enough that leadership cannot scroll past them.</p>
             </article>
             <article class="signal-card">
               <span class="signal-card__label">Escalations surfaced</span>
               <strong class="signal-card__value">{{ dashboard.kpis[3].value }}</strong>
-              <p class="signal-card__detail">Leadership follow-ups pulled forward instead of buried inside report text.</p>
+              <p class="signal-card__detail">Follow-up answers stay visible instead of getting buried in text blocks.</p>
             </article>
           </div>
         </div>
@@ -59,7 +68,7 @@
               <div class="eyebrow">KPI strip</div>
               <h2>Daily control signals</h2>
             </div>
-            <span class="meta-chip meta-chip--subtle">Trusted scan layer</span>
+            <span class="meta-chip meta-chip--subtle">first scan</span>
           </div>
           <div class="kpi-grid">
             {% for metric in dashboard.kpis %}
@@ -68,13 +77,13 @@
                 <strong class="kpi-card__value">{{ metric.value }}</strong>
                 <span class="kpi-card__subtext">
                   {% if metric.label == 'Reports in' %}
-                    Submitted updates currently shaping the readout.
+                    Current updates shaping the command read.
                   {% elif metric.label == 'Missing' %}
-                    People still missing from today’s operating picture.
+                    People still absent from today’s picture.
                   {% elif metric.label == 'Risks' %}
                     Watch items leadership should not ignore.
                   {% else %}
-                    Manager-assigned answers that likely need follow-through.
+                    Assigned answers likely needing a decision.
                   {% endif %}
                 </span>
               </div>
@@ -82,13 +91,13 @@
           </div>
         </article>
 
-        <article class="question-block executive-brief">
+        <article class="question-block executive-brief" data-ui="executive-brief">
           <div class="panel-header">
             <div>
               <div class="eyebrow">AI executive brief</div>
               <h2>What deserves leadership eyes first</h2>
             </div>
-            <span class="meta-chip meta-chip--accent">Fast synthesis</span>
+            <span class="meta-chip meta-chip--accent">fast synthesis</span>
           </div>
           <ol class="brief-list">
             {% for bullet in dashboard.ai_brief %}
@@ -105,7 +114,7 @@
               <div class="eyebrow">Reporting integrity</div>
               <h2>Team coverage graph</h2>
             </div>
-            <span class="meta-chip meta-chip--subtle">Self + direct reports</span>
+            <span class="meta-chip meta-chip--subtle">self + direct reports</span>
           </div>
           <div class="graph-bar-grid">
             {% for bar in dashboard.coverage_graph %}
@@ -130,7 +139,7 @@
               <div class="eyebrow">Decision load</div>
               <h2>Attention pressure by lane</h2>
             </div>
-            <span class="meta-chip meta-chip--warning">Risk + escalation load</span>
+            <span class="meta-chip meta-chip--warning">risk + escalation load</span>
           </div>
           <div class="graph-bar-grid">
             {% for bar in dashboard.pressure_graph %}
@@ -150,12 +159,12 @@
         </article>
       </section>
 
-      <section class="rollup-band">
+      <section class="rollup-band" data-ui="control-band">
         <div class="section-header">
           <div class="section-header__title">
-            <div class="eyebrow">{{ dashboard.milwaukee_rollup.label }}</div>
+            <div class="eyebrow">Control band</div>
             <h2>{{ dashboard.milwaukee_rollup.owner.name }} — {{ dashboard.milwaukee_rollup.owner.role }}</h2>
-            <p class="section-subline">City-level control band for Milwaukee before drilling into function owners.</p>
+            <p class="section-subline">City-level command spine for Milwaukee before drilling into function owners.</p>
           </div>
           <span class="status-pill status-pill--{{ dashboard.milwaukee_rollup.health|lower }}">{{ dashboard.milwaukee_rollup.health }}</span>
         </div>
@@ -182,7 +191,7 @@
 
             <div class="dashboard-priority-grid">
               <section class="priority-panel priority-panel--reported">
-                <span class="section-meta">Reported top 3 priorities</span>
+                <span class="section-meta">Reported priorities</span>
                 <ul class="bullet-list">
                   {% for item in section.reported_priorities %}
                     <li>{{ item }}</li>
@@ -190,7 +199,7 @@
                 </ul>
               </section>
               <section class="priority-panel priority-panel--ai">
-                <span class="section-meta">AI-generated top 3 priorities</span>
+                <span class="section-meta">Recommended priorities</span>
                 <ul class="bullet-list">
                   {% for item in section.ai_priorities %}
                     <li>{{ item }}</li>
@@ -223,7 +232,7 @@
 
         <div class="dashboard-priority-grid">
           <section class="priority-panel priority-panel--reported">
-            <span class="section-meta">Reported top 3 priorities</span>
+            <span class="section-meta">Reported priorities</span>
             <ul class="bullet-list">
               {% for item in dashboard.slc_section.reported_priorities %}
                 <li>{{ item }}</li>
@@ -231,7 +240,7 @@
             </ul>
           </section>
           <section class="priority-panel priority-panel--ai">
-            <span class="section-meta">AI-generated top 3 priorities</span>
+            <span class="section-meta">Recommended priorities</span>
             <ul class="bullet-list">
               {% for item in dashboard.slc_section.ai_priorities %}
                 <li>{{ item }}</li>
@@ -262,7 +271,7 @@
             </div>
             <p class="module-card__detail">{{ card.detail }}</p>
             <div class="divider"></div>
-            <p class="helper">Built as a real surface now so the live integration can drop in without changing the cockpit structure later.</p>
+            <p class="helper">Reserved now so live integrations can drop in without reshaping the command deck.</p>
           </article>
         {% endfor %}
 
@@ -276,7 +285,7 @@
           </div>
           <p class="module-card__detail">{{ dashboard.cpo_card.detail }}</p>
           <div class="divider"></div>
-          <p class="helper">Reserved for labor, out-of-SLA orders, and exception pressure once the App Script feed is wired.</p>
+          <p class="helper">Reserved for labor, out-of-SLA orders, and exception pressure once the downstream feed is wired.</p>
         </article>
       </section>
     </div>

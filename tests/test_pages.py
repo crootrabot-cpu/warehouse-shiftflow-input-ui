@@ -41,7 +41,7 @@ def test_root_route_returns_operations_report_intake_markers():
     assert 'Operations Report' in response.text
     assert 'Choose your name' in response.text
     assert 'Start report' in response.text
-    assert 'Manage questions' in response.text
+    assert 'Leadership tools' in response.text
     assert '/manager?person_id=drake' in response.text
     assert '/manager?person_id=ricardo' in response.text
     assert '/manager?person_id=norman' in response.text
@@ -52,7 +52,8 @@ def test_root_route_returns_operations_report_intake_markers():
     assert '/design-preview' in response.text
     assert 'href="/manifest.webmanifest"' in response.text
     assert 'id="installAppButton"' in response.text
-    assert 'Repo-style dark control surface' in response.text
+    assert 'Industrial command shell' in response.text
+    assert 'data-ui="intake-actions"' in response.text
 
 
 def test_design_preview_route_renders_aggressive_pass_markers():
@@ -70,8 +71,12 @@ def test_dashboard_route_renders_graph_markers():
     response = client.get('/dashboard')
 
     assert response.status_code == 200
+    assert 'Executive command deck' in response.text
     assert 'Team coverage graph' in response.text
     assert 'Attention pressure by lane' in response.text
+    assert 'Control band' in response.text
+    assert 'data-ui="dashboard-nav"' in response.text
+    assert 'data-ui="control-band"' in response.text
     assert 'svg' in response.text
     assert 'Ricardo' in response.text
     assert 'Hugh' in response.text
@@ -446,6 +451,8 @@ def test_recap_page_groups_submissions_missing_people_and_assigned_answers():
     assert 'Yesterday&#39;s units per hour' in response.text
     assert 'Yesterday&#39;s cost per order' in response.text
     assert 'Yesterday&#39;s orders that missed SLA' in response.text
+    assert 'Command note' in response.text
+    assert 'data-ui="email-draft"' in response.text
     assert 'Subject: End-of-day recap for' in response.text
     assert 'Ricardo reported recovered dock backlog before cutoff.' in response.text
     assert 'Hugh reported stabilized second shift staffing and cleared the carryover queue.' in response.text

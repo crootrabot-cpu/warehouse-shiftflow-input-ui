@@ -4,14 +4,64 @@
 
 {% block body %}
   <main class="shell">
-    <section class="card">
-      <div class="eyebrow">Operations Report • intake</div>
-      <h1>Operations Report</h1>
-      <p>Fast end-of-day input for the floor, with a real morning read layer for management.</p>
+    <div class="app-frame">
+      <header class="app-topbar">
+        <div class="brand-lockup">
+          <span class="brand-lockup__meta">Operations report</span>
+          <span class="brand-lockup__title">Field intake + leadership surfaces</span>
+        </div>
+        <div class="topbar-meta topbar-nav">
+          <a class="button-link button-link--small" href="/dashboard">Dashboard</a>
+          <a class="button-link button-link--small" href="/recap">Recap</a>
+          <a class="button-link button-link--small" href="/design-preview">Preview</a>
+        </div>
+      </header>
 
-      <div class="panel-grid">
-        <div class="question-block">
-          <label>Submit my report</label>
+      <section class="hero-card">
+        <div class="hero-grid hero-grid--balanced">
+          <div class="hero-copy">
+            <div class="eyebrow">Industrial command shell</div>
+            <h1>Clean floor input on one side. High-trust leadership control on the other.</h1>
+            <p class="hero-subtitle">Built for fast phone entry, crisp morning reads, and a tighter command surface than the current purple-black drift.</p>
+            <div class="control-tape" data-ui="intake-actions">
+              <div class="control-tape__item">
+                <span class="control-tape__label">Surface</span>
+                <span class="control-tape__value">Phone-first PWA</span>
+              </div>
+              <div class="control-tape__item">
+                <span class="control-tape__label">Palette</span>
+                <span class="control-tape__value">Graphite • indigo • alert red</span>
+              </div>
+              <div class="control-tape__item">
+                <span class="control-tape__label">Workflow</span>
+                <span class="control-tape__value">Entry → dashboard → recap</span>
+              </div>
+            </div>
+          </div>
+          <div class="hero-strip">
+            <article class="signal-card">
+              <span class="signal-card__label">Field entry</span>
+              <strong class="signal-card__value">Fast handoff</strong>
+              <p class="signal-card__detail">No clutter. Pick a name, submit the floor truth, move on.</p>
+            </article>
+            <article class="signal-card">
+              <span class="signal-card__label">Leadership layer</span>
+              <strong class="signal-card__value">Control surfaces</strong>
+              <p class="signal-card__detail">Question routing, dashboard scan, and executive recap stay one tap away.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="intake-grid">
+        <article class="question-block intake-tile">
+          <div class="panel-header">
+            <div>
+              <div class="eyebrow">Submit my report</div>
+              <h2>Close the shift without wasting motion</h2>
+            </div>
+            <span class="meta-chip meta-chip--good">field entry</span>
+          </div>
           <p class="helper">Pick your name and complete your end-of-day handoff.</p>
           <form class="picker" method="get" action="/reports/new">
             <label for="personId">Choose your name</label>
@@ -22,12 +72,18 @@
             </select>
             <button type="submit">Start report</button>
           </form>
-        </div>
+        </article>
 
-        <div class="question-block">
-          <label>Manage questions</label>
+        <article class="question-block intake-tile">
+          <div class="panel-header">
+            <div>
+              <div class="eyebrow">Leadership tools</div>
+              <h2>Open the command surfaces</h2>
+            </div>
+            <span class="meta-chip meta-chip--accent">control layer</span>
+          </div>
           <p class="helper">Leadership can set, edit, pause, and review daily questions from the same app.</p>
-          <div class="stack compact-stack">
+          <div class="intake-actions">
             {% for manager in managers %}
               <a class="button-link" href="/manager?person_id={{ manager.id }}">{{ manager.name }} — {{ manager.role }}</a>
             {% endfor %}
@@ -35,8 +91,8 @@
             <a class="button-link" href="/recap">End-of-day recap</a>
             <a class="button-link" href="/design-preview">Design preview</a>
           </div>
-        </div>
-      </div>
-    </section>
+        </article>
+      </section>
+    </div>
   </main>
 {% endblock %}
