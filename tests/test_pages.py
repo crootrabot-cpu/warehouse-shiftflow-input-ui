@@ -42,6 +42,17 @@ def test_design_preview_route_renders_aggressive_pass_markers():
     assert 'FastAPI is canonical' in response.text
 
 
+def test_dashboard_route_renders_graph_markers():
+    response = client.get('/dashboard')
+
+    assert response.status_code == 200
+    assert 'Team coverage graph' in response.text
+    assert 'Attention pressure by lane' in response.text
+    assert 'svg' in response.text
+    assert 'Ricardo' in response.text
+    assert 'Hugh' in response.text
+
+
 def test_root_route_renders_real_org_roster_markers():
     response = client.get('/')
 

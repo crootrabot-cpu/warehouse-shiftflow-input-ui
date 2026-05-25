@@ -98,6 +98,58 @@
         </article>
       </section>
 
+      <section class="dashboard-top-grid graph-grid">
+        <article class="question-block graph-panel">
+          <div class="panel-header">
+            <div>
+              <div class="eyebrow">Reporting integrity</div>
+              <h2>Team coverage graph</h2>
+            </div>
+            <span class="meta-chip meta-chip--subtle">Self + direct reports</span>
+          </div>
+          <div class="graph-bar-grid">
+            {% for bar in dashboard.coverage_graph %}
+              <article class="graph-bar-card graph-bar-card--{{ bar.tone }}">
+                <svg viewBox="0 0 100 96" class="graph-svg" aria-label="{{ bar.label }} coverage chart">
+                  <rect x="28" y="8" width="44" height="72" rx="14" class="graph-svg__track"></rect>
+                  <rect x="28" y="{{ 80 - bar.fill_height }}" width="44" height="{{ bar.fill_height }}" rx="14" class="graph-svg__fill graph-svg__fill--{{ bar.tone }}"></rect>
+                </svg>
+                <div class="graph-bar-copy">
+                  <span class="section-meta">{{ bar.label }}</span>
+                  <strong>{{ bar.value }}</strong>
+                  <p>{{ bar.note }}</p>
+                </div>
+              </article>
+            {% endfor %}
+          </div>
+        </article>
+
+        <article class="question-block graph-panel">
+          <div class="panel-header">
+            <div>
+              <div class="eyebrow">Decision load</div>
+              <h2>Attention pressure by lane</h2>
+            </div>
+            <span class="meta-chip meta-chip--warning">Risk + escalation load</span>
+          </div>
+          <div class="graph-bar-grid">
+            {% for bar in dashboard.pressure_graph %}
+              <article class="graph-bar-card graph-bar-card--{{ bar.tone }}">
+                <svg viewBox="0 0 100 96" class="graph-svg" aria-label="{{ bar.label }} attention pressure chart">
+                  <rect x="28" y="8" width="44" height="72" rx="14" class="graph-svg__track"></rect>
+                  <rect x="28" y="{{ 80 - bar.fill_height }}" width="44" height="{{ bar.fill_height }}" rx="14" class="graph-svg__fill graph-svg__fill--{{ bar.tone }}"></rect>
+                </svg>
+                <div class="graph-bar-copy">
+                  <span class="section-meta">{{ bar.label }}</span>
+                  <strong>{{ bar.value }}</strong>
+                  <p>{{ bar.note }}</p>
+                </div>
+              </article>
+            {% endfor %}
+          </div>
+        </article>
+      </section>
+
       <section class="rollup-band">
         <div class="section-header">
           <div class="section-header__title">

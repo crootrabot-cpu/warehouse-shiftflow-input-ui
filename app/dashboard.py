@@ -34,6 +34,16 @@ class IntegrationCard:
 
 
 @dataclass(frozen=True)
+class GraphBar:
+    label: str
+    value: str
+    note: str
+    tone: str
+    fill_percent: int
+    fill_height: int
+
+
+@dataclass(frozen=True)
 class DashboardSectionView:
     section: LeadershipSection
     owner: Person
@@ -57,6 +67,8 @@ class DashboardView:
     report_day: date
     kpis: list[KpiMetric]
     ai_brief: list[str]
+    coverage_graph: list[GraphBar]
+    pressure_graph: list[GraphBar]
     milwaukee_rollup: RollupView
     milwaukee_sections: list[DashboardSectionView]
     slc_section: DashboardSectionView
@@ -93,6 +105,8 @@ def build_dashboard(report_day: date, people: list[Person], reports: list[Report
         missing_people=missing_people,
     )
     ai_brief = _build_ai_brief(all_sections, missing_people, reports)
+    coverage_graph = _build_coverage_graph(people, reports_by_person)
+    pressure_graph = _build_pressure_graph(all_sections, reports_by_person)
     kpis = [
         KpiMetric('Reports in', str(len(reports))),
         KpiMetric('Missing', str(len(missing_people)), tone='warning' if missing_people else 'good'),
@@ -115,6 +129,8 @@ def build_dashboard(report_day: date, people: list[Person], reports: list[Report
         report_day=report_day,
         kpis=kpis,
         ai_brief=ai_brief,
+        coverage_graph=coverage_graph,
+        pressure_graph=pressure_graph,
         milwaukee_rollup=milwaukee_rollup,
         milwaukee_sections=[section for section in all_sections if section.section.location == 'Milwaukee' and section.section.kind == 'function'],
         slc_section=next(section for section in all_sections if section.section.id == 'salt-lake-city-operations'),
@@ -220,6 +236,71 @@ def _build_ai_brief(
         f"Missing input count is {len(missing_people)}.",
         f"Priority sections needing leadership eyes: {', '.join(section.section.label for section in sections[:3])}.",
     ]
+
+
+def _build_coverage_graph(people: list[Person], reports_by_person: dict[str, ReportRecord]) -> list[GraphBar]:
+    manager_order = ['ricardo', 'norman', 'cody', 'hugh', 'luis', 'adam', 'emily']
+    people_by_id = {person.id: person for person in people}
+    graph: list[GraphBar] = []
+    for manager_id in manager_order:
+        manager = people_by_id.get(manager_id)
+        if manager is None:
+            continue
+        scoped_people = [manager] + [person for person in people if person.manager_id == manager_id]
+        expected = len(scoped_people)
+        submitted = sum(1 for person in scoped_people if person.id in reports_by_person)
+        fill_percent = round((submitted / expected) * 100) if expected else 0
+        tone = 'good' if fill_percent == 100 else 'warning' if fill_percent >= 60 else 'bad'
+        graph.append(
+            GraphBar(
+                label=manager.name,
+                value=f'{submitted}/{expected}',
+                note=f'{fill_percent}% reporting coverage',
+                tone=tone,
+                fill_percent=fill_percent,
+                fill_height=max(12, round(fill_percent * 0.72)) if expected else 12,
+            )
+        )
+    return graph
+
+
+def _build_pressure_graph(
+    sections: list[DashboardSectionView],
+    reports_by_person: dict[str, ReportRecord],
+) -> list[GraphBar]:
+    scored_rows: list[tuple[str, int, str, str]] = []
+    for section in sections:
+        report = reports_by_person.get(section.owner.id)
+        escalation_count = len(_assigned_answers(report))
+        risk_count = 1 if _risk_answer(report) else 0
+        missing_penalty = 2 if report is None else 0
+        score = escalation_count + risk_count + missing_penalty
+        if report is None:
+            note = 'Missing leader update'
+            tone = 'bad'
+        elif risk_count or escalation_count:
+            note = f'{risk_count} watch · {escalation_count} escalations'
+            tone = 'warning' if score < 3 else 'bad'
+        else:
+            note = 'No open watch items'
+            tone = 'good'
+        scored_rows.append((section.section.label, score, note, tone))
+
+    max_score = max((score for _, score, _, _ in scored_rows), default=1)
+    graph: list[GraphBar] = []
+    for label, score, note, tone in scored_rows:
+        fill_percent = round((score / max_score) * 100) if max_score else 0
+        graph.append(
+            GraphBar(
+                label=label,
+                value=str(score),
+                note=note,
+                tone=tone,
+                fill_percent=fill_percent,
+                fill_height=max(12, round(fill_percent * 0.72)) if score else 12,
+            )
+        )
+    return graph
 
 
 def _extract_top_three_priorities(report: ReportRecord | None) -> list[str]:

@@ -352,6 +352,62 @@
         background: linear-gradient(180deg, rgba(17, 21, 31, 0.94), rgba(11, 14, 22, 0.98));
       }
 
+      .graph-grid {
+        align-items: start;
+      }
+
+      .graph-panel {
+        gap: 18px;
+      }
+
+      .graph-bar-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 14px;
+      }
+
+      .graph-bar-card {
+        display: grid;
+        gap: 12px;
+        padding: 14px;
+        border-radius: 16px;
+        border: 1px solid var(--line);
+        background: linear-gradient(180deg, rgba(24, 31, 46, 0.95), rgba(15, 19, 29, 0.95));
+      }
+
+      .graph-bar-card--good { border-color: rgba(105, 208, 156, 0.22); }
+      .graph-bar-card--warning { border-color: rgba(255, 207, 120, 0.22); }
+      .graph-bar-card--bad { border-color: rgba(255, 143, 143, 0.22); }
+
+      .graph-svg {
+        width: 100%;
+        height: 112px;
+      }
+
+      .graph-svg__track {
+        fill: rgba(255, 255, 255, 0.06);
+        stroke: rgba(255, 255, 255, 0.08);
+      }
+
+      .graph-svg__fill--good { fill: rgba(105, 208, 156, 0.92); }
+      .graph-svg__fill--warning { fill: rgba(255, 207, 120, 0.92); }
+      .graph-svg__fill--bad { fill: rgba(255, 143, 143, 0.92); }
+
+      .graph-bar-copy {
+        display: grid;
+        gap: 6px;
+      }
+
+      .graph-bar-copy strong {
+        font-size: 1.3rem;
+        letter-spacing: -0.04em;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .graph-bar-copy p {
+        font-size: 0.88rem;
+      }
+
       .stack,
       .compact-stack,
       .section-stack,
