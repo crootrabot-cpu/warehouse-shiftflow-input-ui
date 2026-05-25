@@ -35,6 +35,7 @@ def test_repository_seeds_expected_people_roster(tmp_path):
     assert people_by_id['drake'].can_assign is True
     assert people_by_id['norman'].can_assign is True
     assert people_by_id['emily'].can_assign is True
+    assert people_by_id['hugh'].can_assign is True
     assert people_by_id['ana'].can_assign is False
     assert people_by_id['drake'].role == 'VP Operations'
     assert people_by_id['cody'].name == 'Kody'

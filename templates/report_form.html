@@ -21,6 +21,8 @@
               </select>
             {% elif question.type == 'textarea' %}
               <textarea id="{{ question.id }}" name="{{ question.id }}" rows="4" placeholder="{{ question.placeholder }}"></textarea>
+            {% elif question.type == 'number' %}
+              <input id="{{ question.id }}" name="{{ question.id }}" type="number" inputmode="decimal" step="any" placeholder="{{ question.placeholder }}" />
             {% else %}
               <input id="{{ question.id }}" name="{{ question.id }}" type="text" placeholder="{{ question.placeholder }}" />
             {% endif %}

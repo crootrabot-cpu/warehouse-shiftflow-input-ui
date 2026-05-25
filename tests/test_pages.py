@@ -24,6 +24,7 @@ def test_root_route_returns_operations_report_intake_markers():
     assert '/manager?person_id=drake' in response.text
     assert '/manager?person_id=ricardo' in response.text
     assert '/manager?person_id=norman' in response.text
+    assert '/manager?person_id=hugh' in response.text
     assert '/manager?person_id=emily' in response.text
     assert '/dashboard' in response.text
     assert '/recap' in response.text
@@ -362,6 +363,28 @@ def test_recap_page_groups_submissions_missing_people_and_assigned_answers():
             'ricardo-mood': 'Good',
             'ricardo-wins': 'Recovered dock backlog before cutoff.',
             'ricardo-risk': 'Need more outbound coverage after 3 PM.',
+            'ricardo-yesterday-labor-hours-spent': '18',
+            'ricardo-yesterday-hours-worked': '42',
+            'ricardo-yesterday-orders-shipped': '380',
+            'ricardo-yesterday-units-per-hour': '27.4',
+            'ricardo-yesterday-cost-per-order': '2.85',
+            'ricardo-yesterday-orders-missed-sla': '7',
+        },
+        follow_redirects=False,
+    )
+    client.post(
+        '/reports',
+        data={
+            'person_id': 'hugh',
+            'hugh-mood': 'Good',
+            'hugh-wins': 'Stabilized second shift staffing and cleared the carryover queue.',
+            'hugh-risk': 'Two newer packers still need closer coaching on late wave accuracy.',
+            'hugh-yesterday-labor-hours-spent': '9',
+            'hugh-yesterday-hours-worked': '18',
+            'hugh-yesterday-orders-shipped': '110',
+            'hugh-yesterday-units-per-hour': '22',
+            'hugh-yesterday-cost-per-order': '3.40',
+            'hugh-yesterday-orders-missed-sla': '4',
         },
         follow_redirects=False,
     )
@@ -381,12 +404,18 @@ def test_recap_page_groups_submissions_missing_people_and_assigned_answers():
 
     assert response.status_code == 200
     assert 'End-of-day recap' in response.text
-    assert 'Submitted today' in response.text
-    assert 'Missing today' in response.text
-    assert 'Ricardo' in response.text
-    assert 'Kody' in response.text
+    assert 'Executive email draft' in response.text
+    assert 'Yesterday&#39;s labor hours spent' in response.text
+    assert 'Yesterday&#39;s hours worked' in response.text
+    assert 'Yesterday&#39;s orders shipped' in response.text
+    assert 'Yesterday&#39;s units per hour' in response.text
+    assert 'Yesterday&#39;s cost per order' in response.text
+    assert 'Yesterday&#39;s orders that missed SLA' in response.text
+    assert 'Subject: End-of-day recap for' in response.text
+    assert 'Ricardo reported recovered dock backlog before cutoff.' in response.text
+    assert 'Hugh reported stabilized second shift staffing and cleared the carryover queue.' in response.text
+    assert 'Kody reported trailer pull timing improved before close.' in response.text
+    assert 'Two newer packers still need closer coaching on late wave accuracy.' in response.text
     assert 'Rely' in response.text
-    assert 'Recovered dock backlog before cutoff.' in response.text
-    assert 'Need one more picker after 3 PM tomorrow.' in response.text
     assert 'What exactly needs leadership help tomorrow morning?' in response.text
     assert 'Need temp labor approved before first outbound wave.' in response.text

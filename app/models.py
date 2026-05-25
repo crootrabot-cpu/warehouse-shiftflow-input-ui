@@ -4,6 +4,7 @@ from dataclasses import dataclass, field
 from datetime import date, datetime
 
 DAY_KEYS = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat']
+MANAGER_IDS = {'drake', 'ricardo', 'norman', 'cody', 'hugh', 'luis', 'adam', 'emily'}
 PERSON_DEFS = [
     ('drake', 'Drake', 'VP Operations', 'Leadership', None),
     ('ricardo', 'Ricardo', 'Milwaukee operations manager', 'Milwaukee', 'drake'),
@@ -142,7 +143,7 @@ def first_name(name: str) -> str:
 
 def default_questions_for(person_id: str, name: str) -> list[Question]:
     short_name = first_name(name)
-    return [
+    questions = [
         Question(
             id=f'{person_id}-mood',
             type='choice',
@@ -176,6 +177,60 @@ def default_questions_for(person_id: str, name: str) -> list[Question]:
             placeholder='Example: labor gap in picking after 3 PM',
         ),
     ]
+    if person_id in MANAGER_IDS:
+        questions.extend(
+            [
+                Question(
+                    id=f'{person_id}-yesterday-labor-hours-spent',
+                    type='number',
+                    source='default',
+                    prompt="Yesterday's labor hours spent",
+                    helper='Numeric only. Use total labor hours for your lane yesterday.',
+                    placeholder='18',
+                ),
+                Question(
+                    id=f'{person_id}-yesterday-hours-worked',
+                    type='number',
+                    source='default',
+                    prompt="Yesterday's hours worked",
+                    helper='Numeric only. Use total worked hours for your lane yesterday.',
+                    placeholder='42',
+                ),
+                Question(
+                    id=f'{person_id}-yesterday-orders-shipped',
+                    type='number',
+                    source='default',
+                    prompt="Yesterday's orders shipped",
+                    helper='Numeric only. Whole number is fine.',
+                    placeholder='380',
+                ),
+                Question(
+                    id=f'{person_id}-yesterday-units-per-hour',
+                    type='number',
+                    source='default',
+                    prompt="Yesterday's units per hour",
+                    helper='Numeric only. Decimals are okay.',
+                    placeholder='27.4',
+                ),
+                Question(
+                    id=f'{person_id}-yesterday-cost-per-order',
+                    type='number',
+                    source='default',
+                    prompt="Yesterday's cost per order",
+                    helper='Numeric only. Decimals are okay.',
+                    placeholder='2.85',
+                ),
+                Question(
+                    id=f'{person_id}-yesterday-orders-missed-sla',
+                    type='number',
+                    source='default',
+                    prompt="Yesterday's orders that missed SLA",
+                    helper='Numeric only. Whole number is fine.',
+                    placeholder='7',
+                ),
+            ]
+        )
+    return questions
 
 
 _children_by_manager: dict[str, list[str]] = {}
@@ -192,7 +247,7 @@ PEOPLE: list[Person] = [
         role=role,
         team=team,
         manager_id=manager_id,
-        can_assign=person_id in {'drake', 'ricardo', 'norman', 'cody', 'luis', 'adam', 'emily'},
+        can_assign=person_id in MANAGER_IDS,
         default_questions=default_questions_for(person_id, name),
     )
     for person_id, name, role, team, manager_id in PERSON_DEFS
