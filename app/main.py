@@ -1,7 +1,8 @@
 from datetime import date
 
 from fastapi import FastAPI, Form, HTTPException, Request
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, JSONResponse, PlainTextResponse, RedirectResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from app.config import BASE_DIR, DATA_DIR, DATABASE_PATH
@@ -16,12 +17,70 @@ templates = Jinja2Templates(directory=str(BASE_DIR / 'templates'))
 repository = SQLiteRepository(DATABASE_PATH)
 repository.init_schema()
 
+MANIFEST = {
+    'name': 'Operations Report',
+    'short_name': 'Ops Report',
+    'id': '/',
+    'start_url': '/',
+    'scope': '/',
+    'display': 'standalone',
+    'background_color': '#07090d',
+    'theme_color': '#111111',
+    'description': 'Phone-installable operations report cockpit with a repo-style dark control surface.',
+    'icons': [
+        {
+            'src': '/assets/app-icon-192.png',
+            'sizes': '192x192',
+            'type': 'image/png',
+            'purpose': 'any maskable',
+        },
+        {
+            'src': '/assets/app-icon-512.png',
+            'sizes': '512x512',
+            'type': 'image/png',
+            'purpose': 'any maskable',
+        },
+    ],
+}
+
 app = FastAPI(title='Operations Report')
+app.mount('/assets', StaticFiles(directory=str(BASE_DIR / 'assets')), name='assets')
 
 
 @app.get('/health')
 def health() -> dict[str, bool]:
     return {'ok': True}
+
+
+@app.get('/manifest.webmanifest')
+def manifest() -> JSONResponse:
+    return JSONResponse(MANIFEST, media_type='application/manifest+json')
+
+
+@app.get('/sw.js')
+def service_worker() -> PlainTextResponse:
+    return PlainTextResponse(
+        """
+const CACHE_NAME = 'operations-report-shell-v1';
+const SHELL_ASSETS = ['/', '/manifest.webmanifest', '/assets/pwa.js', '/assets/app-icon-192.png', '/assets/app-icon-512.png'];
+
+self.addEventListener('install', (event) => {
+  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(SHELL_ASSETS)).then(() => self.skipWaiting()));
+});
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((keys) => Promise.all(keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key)))).then(() => self.clients.claim())
+  );
+});
+
+self.addEventListener('fetch', (event) => {
+  if (event.request.method !== 'GET') return;
+  event.respondWith(caches.match(event.request).then((cached) => cached || fetch(event.request)));
+});
+        """.strip(),
+        media_type='application/javascript',
+    )
 
 
 @app.get('/', response_class=HTMLResponse)

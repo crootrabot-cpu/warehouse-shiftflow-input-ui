@@ -13,6 +13,27 @@ def test_health_route_returns_ok():
     assert response.json() == {'ok': True}
 
 
+def test_manifest_route_returns_installable_metadata():
+    response = client.get('/manifest.webmanifest')
+
+    assert response.status_code == 200
+    assert response.headers['content-type'].startswith('application/manifest+json')
+    body = response.json()
+    assert body['name'] == 'Operations Report'
+    assert body['display'] == 'standalone'
+    assert body['start_url'] == '/'
+    assert any(icon['src'] == '/assets/app-icon-192.png' for icon in body['icons'])
+
+
+def test_service_worker_route_registers_shell_assets():
+    response = client.get('/sw.js')
+
+    assert response.status_code == 200
+    assert 'self.addEventListener' in response.text
+    assert '/manifest.webmanifest' in response.text
+    assert '/assets/pwa.js' in response.text
+
+
 def test_root_route_returns_operations_report_intake_markers():
     response = client.get('/')
 
@@ -29,6 +50,9 @@ def test_root_route_returns_operations_report_intake_markers():
     assert '/dashboard' in response.text
     assert '/recap' in response.text
     assert '/design-preview' in response.text
+    assert 'href="/manifest.webmanifest"' in response.text
+    assert 'id="installAppButton"' in response.text
+    assert 'Repo-style dark control surface' in response.text
 
 
 def test_design_preview_route_renders_aggressive_pass_markers():
