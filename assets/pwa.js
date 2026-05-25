@@ -1,3 +1,4 @@
+const SW_URL = '/sw.js?v=3';
 let deferredInstallPrompt = null;
 
 const shell = document.getElementById('installShell');
@@ -17,7 +18,7 @@ function hideInstallShell() {
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').catch((error) => console.error('service worker registration failed', error));
+    navigator.serviceWorker.register(SW_URL).catch((error) => console.error('service worker registration failed', error));
   });
 }
 

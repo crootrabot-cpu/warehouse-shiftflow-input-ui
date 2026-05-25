@@ -61,8 +61,8 @@ def manifest() -> JSONResponse:
 def service_worker() -> PlainTextResponse:
     return PlainTextResponse(
         """
-const CACHE_NAME = 'operations-report-shell-v1';
-const SHELL_ASSETS = ['/', '/manifest.webmanifest', '/assets/pwa.js', '/assets/app-icon-192.png', '/assets/app-icon-512.png'];
+const CACHE_NAME = 'operations-report-shell-v2';
+const SHELL_ASSETS = ['/manifest.webmanifest', '/assets/pwa.js', '/assets/app-icon-192.png', '/assets/app-icon-512.png'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(SHELL_ASSETS)).then(() => self.skipWaiting()));
@@ -76,10 +76,35 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
-  event.respondWith(caches.match(event.request).then((cached) => cached || fetch(event.request)));
+
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          const copy = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put('/', copy));
+          return response;
+        })
+        .catch(() => caches.match('/') || caches.match(event.request))
+    );
+    return;
+  }
+
+  event.respondWith(
+    caches.match(event.request).then((cached) => {
+      if (cached) return cached;
+      return fetch(event.request).then((response) => {
+        if (!response || response.status !== 200 || response.type !== 'basic') return response;
+        const copy = response.clone();
+        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
+        return response;
+      });
+    })
+  );
 });
         """.strip(),
         media_type='application/javascript',
+        headers={'Cache-Control': 'no-store, max-age=0'},
     )
 
 
