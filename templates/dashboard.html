@@ -8,13 +8,12 @@
       <header class="app-topbar" data-ui="dashboard-nav">
         <div class="brand-lockup">
           <span class="brand-lockup__meta">Operations report</span>
-          <span class="brand-lockup__title">Executive command deck</span>
+          <span class="brand-lockup__title">Ops</span>
         </div>
         <div class="topbar-meta topbar-nav">
           <span class="meta-chip meta-chip--subtle">{{ dashboard.report_day.isoformat() }}</span>
-          <span class="meta-chip meta-chip--accent">Quiet Command Luxury</span>
           <a class="button-link button-link--small" href="/recap">Recap</a>
-          <a class="button-link button-link--small" href="/">Entry</a>
+          <a class="button-link button-link--small" href="/">Reports</a>
         </div>
       </header>
 
@@ -22,56 +21,56 @@
         <div class="control-strip">
           <div class="control-strip__meta">
             <div class="control-strip__cluster">
-              <span class="meta-chip meta-chip--subtle">Executive control strip</span>
-              <span class="meta-chip meta-chip--accent">{{ dashboard.milwaukee_rollup.health }} posture</span>
+              <span class="meta-chip meta-chip--subtle">Ops summary</span>
+              <span class="meta-chip meta-chip--subtle">{{ dashboard.milwaukee_rollup.health }}</span>
             </div>
             <div class="control-strip__cluster">
-              <span class="meta-chip meta-chip--warning">{{ dashboard.kpis[1].value }} missing inputs</span>
-              <span class="meta-chip meta-chip--subtle">{{ dashboard.kpis[3].value }} escalations</span>
+              <span class="meta-chip meta-chip--subtle">{{ dashboard.kpis[1].value }} missing</span>
+              <span class="meta-chip meta-chip--subtle">{{ dashboard.kpis[3].value }} follow-ups</span>
             </div>
           </div>
           <div class="command-band">
             <div class="command-band__story">
               <div class="command-band__headline">
-                <div class="eyebrow">Command view</div>
-                <h1>Operating posture first. Noise stripped out.</h1>
+                <div class="eyebrow">Ops</div>
+                <h1>Today’s ops summary</h1>
                 <p class="hero-subtitle">
-                  This pass turns the dashboard into a clearer decision surface: operating posture, top risk, top opportunity, and who still owes the picture.
+                  Review report coverage, open issues, manager notes, and the current Milwaukee read before assigning follow-up.
                 </p>
               </div>
               <div class="command-band__grid">
                 <article class="signal-card signal-card--lead">
-                  <span class="signal-card__label">Operating posture</span>
+                  <span class="signal-card__label">Milwaukee status</span>
                   <strong class="signal-card__value">{{ dashboard.milwaukee_rollup.health }}</strong>
-                  <p class="signal-card__detail">Milwaukee still drives the tone, so leadership reads Ricardo’s lane before anything else.</p>
+                  <p class="signal-card__detail">Ricardo’s update sets the pace for the rest of the Milwaukee read.</p>
                 </article>
                 <article class="signal-card">
-                  <span class="signal-card__label">Top risk now</span>
+                  <span class="signal-card__label">Open issues</span>
                   <strong class="signal-card__value">{{ dashboard.kpis[2].value }}</strong>
-                  <p class="signal-card__detail">Active risks needing intervention instead of passive awareness.</p>
+                  <p class="signal-card__detail">Issues that still need a decision or follow-up today.</p>
                 </article>
                 <article class="signal-card">
-                  <span class="signal-card__label">Missing inputs</span>
+                  <span class="signal-card__label">Missing reports</span>
                   <strong class="signal-card__value">{{ dashboard.kpis[1].value }}</strong>
-                  <p class="signal-card__detail">Managers still absent from the operating picture and blocking a clean read.</p>
+                  <p class="signal-card__detail">Managers still missing from today’s operating view.</p>
                 </article>
               </div>
               <div class="command-band__actions">
                 <a class="button-link button-link--small" href="/recap">Open recap</a>
-                <a class="button-link button-link--small" href="/">Start entry</a>
-                <a class="button-link button-link--small" href="/manager?person_id=ricardo">Edit questions</a>
-                <a class="button-link button-link--small button-link--primary dashboard-execute" href="/execute-recap">Execute recap</a>
+                <a class="button-link button-link--small" href="/">Start report</a>
+                <a class="button-link button-link--small" href="/manager?person_id=ricardo">Manage questions</a>
+                <a class="button-link button-link--small button-link--primary dashboard-execute" href="/execute-recap">Generate recap</a>
               </div>
             </div>
             <div class="command-band__aside">
               <article class="summary-card summary-card--spotlight">
-                <span class="summary-card__label">Top opportunity</span>
+                <span class="summary-card__label">Reports in</span>
                 <strong class="metric-emphasis">{{ dashboard.kpis[0].value }}</strong>
-                <p class="summary-card__detail">Use the current report volume to tighten next-shift direction before follow-up questions spread.</p>
+                <p class="summary-card__detail">Current manager reports available for today’s read.</p>
               </article>
               <article class="summary-card summary-card--warning">
-                <span class="summary-card__label">Leadership move</span>
-                <p class="summary-card__detail no-margin">Resolve missing manager inputs first, then clear the loudest Milwaukee bottleneck before drilling into secondary lanes.</p>
+                <span class="summary-card__label">Next step</span>
+                <p class="summary-card__detail no-margin">Clear missing reports first, then review Milwaukee before moving into secondary team issues.</p>
               </article>
             </div>
           </div>
@@ -82,10 +81,10 @@
         <article class="question-block">
           <div class="panel-header">
             <div>
-              <div class="eyebrow">Weighted KPI rail</div>
-              <h2>Daily control signals</h2>
+              <div class="eyebrow">Key metrics</div>
+              <h2>Key metrics</h2>
             </div>
-            <span class="meta-chip meta-chip--subtle">first scan</span>
+            <span class="meta-chip meta-chip--subtle">today</span>
           </div>
           <div class="kpi-rail">
             {% for metric in dashboard.kpis %}
@@ -94,13 +93,13 @@
                 <strong class="kpi-card__value">{{ metric.value }}</strong>
                 <span class="kpi-card__subtext">
                   {% if metric.label == 'Reports in' %}
-                    Current updates shaping the command read before leadership starts assigning fixes.
+                    Current manager reports available in the system.
                   {% elif metric.label == 'Missing' %}
-                    People still absent from today’s picture and reducing confidence in the read.
+                    Reports still missing from today’s view.
                   {% elif metric.label == 'Risks' %}
-                    Issues already loud enough to merit intervention instead of observation.
+                    Reported issues that still need attention.
                   {% else %}
-                    Assigned answers likely needing a same-day call rather than passive tracking.
+                    Assigned answers that likely need a follow-up.
                   {% endif %}
                 </span>
               </div>
@@ -111,10 +110,10 @@
         <article class="question-block executive-brief" data-ui="executive-brief">
           <div class="panel-header">
             <div>
-              <div class="eyebrow">AI executive brief</div>
-              <h2>What deserves leadership eyes first</h2>
+              <div class="eyebrow">Ops notes</div>
+              <h2>Ops notes</h2>
             </div>
-            <span class="meta-chip meta-chip--accent">ranked read</span>
+            <span class="meta-chip meta-chip--subtle">summary</span>
           </div>
           <ol class="brief-list">
             {% for bullet in dashboard.ai_brief %}
@@ -128,8 +127,8 @@
         <article class="question-block graph-panel">
           <div class="panel-header">
             <div>
-              <div class="eyebrow">Reporting integrity</div>
-              <h2>Team coverage graph</h2>
+              <div class="eyebrow">Coverage</div>
+              <h2>Report coverage</h2>
             </div>
             <span class="meta-chip meta-chip--subtle">self + direct reports</span>
           </div>
@@ -153,10 +152,10 @@
         <article class="question-block graph-panel">
           <div class="panel-header">
             <div>
-              <div class="eyebrow">Decision load</div>
-              <h2>Attention pressure by lane</h2>
+              <div class="eyebrow">Issues</div>
+              <h2>Open issues by team</h2>
             </div>
-            <span class="meta-chip meta-chip--warning">risk + escalation load</span>
+            <span class="meta-chip meta-chip--subtle">risk + follow-up load</span>
           </div>
           <div class="graph-bar-grid">
             {% for bar in dashboard.pressure_graph %}
@@ -179,9 +178,9 @@
       <section class="rollup-band" data-ui="control-band">
         <div class="section-header">
           <div class="section-header__title">
-            <div class="eyebrow">Milwaukee control spine</div>
+            <div class="eyebrow">Milwaukee</div>
             <h2>{{ dashboard.milwaukee_rollup.owner.name }} — {{ dashboard.milwaukee_rollup.owner.role }}</h2>
-            <p class="section-subline">Milwaukee is the signature surface: observed state, what leadership needs now, and the consequence of delay.</p>
+            <p class="section-subline">Primary Milwaukee read with current notes and next-step context.</p>
           </div>
           <span class="status-pill status-pill--{{ dashboard.milwaukee_rollup.health|lower }}">{{ dashboard.milwaukee_rollup.health }}</span>
         </div>
@@ -190,12 +189,12 @@
             <article class="milwaukee-spine__panel milwaukee-spine__panel--owner">
               <span class="section-meta">Owner</span>
               <div class="milwaukee-spine__owner">
-                <strong>Ricardo owns the city-level read.</strong>
-                <p class="section-subline">His lane sets the pace for outbound, inventory, returns, and shift coordination under Milwaukee.</p>
+                <strong>Ricardo</strong>
+                <p class="section-subline">Milwaukee operations manager.</p>
               </div>
             </article>
             <article class="milwaukee-spine__panel">
-              <span class="section-meta">Observed</span>
+              <span class="section-meta">Notes</span>
               <ul>
                 {% for bullet in dashboard.milwaukee_rollup.bullets[:2] %}
                   <li>{{ bullet }}</li>
@@ -203,9 +202,9 @@
               </ul>
             </article>
             <article class="milwaukee-spine__panel">
-              <span class="section-meta">Need now</span>
+              <span class="section-meta">Next step</span>
               <p>{{ dashboard.milwaukee_rollup.bullets[2] if dashboard.milwaukee_rollup.bullets|length > 2 else dashboard.milwaukee_rollup.bullets[0] }}</p>
-              <p class="milwaukee-spine__consequence">If this stays fuzzy, the rest of the dashboard turns into downstream guesswork.</p>
+              <p class="milwaukee-spine__consequence">Finish this read before shifting attention into lower-priority sections.</p>
             </article>
           </div>
         </div>

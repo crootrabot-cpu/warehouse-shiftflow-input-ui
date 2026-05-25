@@ -71,14 +71,14 @@ def test_dashboard_route_renders_graph_markers():
     response = client.get('/dashboard')
 
     assert response.status_code == 200
-    assert 'Executive command deck' in response.text
-    assert 'Quiet Command Luxury' in response.text
-    assert 'Executive control strip' in response.text
-    assert 'Operating posture first. Noise stripped out.' in response.text
-    assert 'Weighted KPI rail' in response.text
-    assert 'Team coverage graph' in response.text
-    assert 'Attention pressure by lane' in response.text
-    assert 'Milwaukee control spine' in response.text
+    assert 'Ops' in response.text
+    assert 'Ops summary' in response.text
+    assert 'Key metrics' in response.text
+    assert 'Ops notes' in response.text
+    assert 'Report coverage' in response.text
+    assert 'Open issues by team' in response.text
+    assert 'Milwaukee' in response.text
+    assert 'Generate recap' in response.text
     assert 'data-ui="dashboard-nav"' in response.text
     assert 'data-ui="control-band"' in response.text
     assert 'svg' in response.text
@@ -337,12 +337,12 @@ def test_dashboard_page_shows_saved_reports_for_today():
 
     assert response.status_code == 200
     assert 'Leadership dashboard' in response.text
-    assert 'AI executive brief' in response.text
-    assert 'Execute recap' in response.text
+    assert 'Ops notes' in response.text
+    assert 'Generate recap' in response.text
     assert 'Open recap' in response.text
-    assert 'Start entry' in response.text
-    assert 'Edit questions' in response.text
-    assert 'Milwaukee roll-up' in response.text
+    assert 'Start report' in response.text
+    assert 'Manage questions' in response.text
+    assert 'Milwaukee' in response.text
     assert 'Milwaukee Outbound' in response.text
     assert 'Milwaukee Inventory' in response.text
     assert 'Milwaukee Inbound / Returns' in response.text
@@ -447,15 +447,16 @@ def test_recap_page_groups_submissions_missing_people_and_assigned_answers():
     response = client.get('/recap')
 
     assert response.status_code == 200
-    assert 'End-of-day recap' in response.text
-    assert 'Executive email draft' in response.text
+    assert 'Recap' in response.text
+    assert 'Yesterday' in response.text
+    assert 'Manager updates' in response.text
     assert 'Yesterday&#39;s labor hours spent' in response.text
     assert 'Yesterday&#39;s hours worked' in response.text
     assert 'Yesterday&#39;s orders shipped' in response.text
     assert 'Yesterday&#39;s units per hour' in response.text
     assert 'Yesterday&#39;s cost per order' in response.text
     assert 'Yesterday&#39;s orders that missed SLA' in response.text
-    assert 'Command note' in response.text
+    assert 'Email draft' in response.text
     assert 'data-ui="email-draft"' in response.text
     assert 'Subject: End-of-day recap for' in response.text
     assert 'Ricardo reported recovered dock backlog before cutoff.' in response.text
