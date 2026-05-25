@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Leadership dashboard • Operations Report{% endblock %}
+{% block title %}Ops dashboard • Operations Report{% endblock %}
 
 {% block body %}
   <main class="shell">
@@ -8,7 +8,7 @@
       <header class="app-topbar" data-ui="dashboard-nav">
         <div class="brand-lockup">
           <span class="brand-lockup__meta">Operations report</span>
-          <span class="brand-lockup__title">Ops</span>
+          <span class="brand-lockup__title">Ops dashboard</span>
         </div>
         <div class="topbar-meta topbar-nav">
           <span class="meta-chip meta-chip--subtle">{{ dashboard.report_day.isoformat() }}</span>
@@ -17,63 +17,43 @@
         </div>
       </header>
 
-      <section class="hero-card">
-        <div class="control-strip">
-          <div class="control-strip__meta">
-            <div class="control-strip__cluster">
-              <span class="meta-chip meta-chip--subtle">Ops summary</span>
-              <span class="meta-chip meta-chip--subtle">{{ dashboard.milwaukee_rollup.health }}</span>
-            </div>
-            <div class="control-strip__cluster">
-              <span class="meta-chip meta-chip--subtle">{{ dashboard.kpis[1].value }} missing</span>
-              <span class="meta-chip meta-chip--subtle">{{ dashboard.kpis[3].value }} follow-ups</span>
-            </div>
+      <section class="hero-card dashboard-lead-card">
+        <div class="dashboard-lead-row">
+          <div class="hero-copy">
+            <div class="eyebrow">Today</div>
+            <h1>Daily summary</h1>
+            <p class="hero-subtitle">
+              Coverage, open issues, notes, and follow-up for today’s floor updates.
+            </p>
           </div>
-          <div class="command-band">
-            <div class="command-band__story">
-              <div class="command-band__headline">
-                <div class="eyebrow">Ops</div>
-                <h1>Today’s ops summary</h1>
-                <p class="hero-subtitle">
-                  Review report coverage, open issues, manager notes, and the current Milwaukee read before assigning follow-up.
-                </p>
-              </div>
-              <div class="command-band__grid">
-                <article class="signal-card signal-card--lead">
-                  <span class="signal-card__label">Milwaukee status</span>
-                  <strong class="signal-card__value">{{ dashboard.milwaukee_rollup.health }}</strong>
-                  <p class="signal-card__detail">Ricardo’s update sets the pace for the rest of the Milwaukee read.</p>
-                </article>
-                <article class="signal-card">
-                  <span class="signal-card__label">Open issues</span>
-                  <strong class="signal-card__value">{{ dashboard.kpis[2].value }}</strong>
-                  <p class="signal-card__detail">Issues that still need a decision or follow-up today.</p>
-                </article>
-                <article class="signal-card">
-                  <span class="signal-card__label">Missing reports</span>
-                  <strong class="signal-card__value">{{ dashboard.kpis[1].value }}</strong>
-                  <p class="signal-card__detail">Managers still missing from today’s operating view.</p>
-                </article>
-              </div>
-              <div class="command-band__actions">
-                <a class="button-link button-link--small" href="/recap">Open recap</a>
-                <a class="button-link button-link--small" href="/">Start report</a>
-                <a class="button-link button-link--small" href="/manager?person_id=ricardo">Manage questions</a>
-                <a class="button-link button-link--small button-link--primary dashboard-execute" href="/execute-recap">Generate recap</a>
-              </div>
-            </div>
-            <div class="command-band__aside">
-              <article class="summary-card summary-card--spotlight">
-                <span class="summary-card__label">Reports in</span>
-                <strong class="metric-emphasis">{{ dashboard.kpis[0].value }}</strong>
-                <p class="summary-card__detail">Current manager reports available for today’s read.</p>
-              </article>
-              <article class="summary-card summary-card--warning">
-                <span class="summary-card__label">Next step</span>
-                <p class="summary-card__detail no-margin">Clear missing reports first, then review Milwaukee before moving into secondary team issues.</p>
-              </article>
-            </div>
+          <div class="command-band__actions dashboard-lead-actions">
+            <a class="button-link button-link--small" href="/recap">Recap</a>
+            <a class="button-link button-link--small" href="/">New report</a>
+            <a class="button-link button-link--small" href="/manager?person_id=ricardo">Questions</a>
+            <a class="button-link button-link--small button-link--primary dashboard-execute" href="/execute-recap">Generate recap</a>
           </div>
+        </div>
+        <div class="hero-strip hero-strip--compact">
+          <article class="signal-card">
+            <span class="signal-card__label">Reports in</span>
+            <strong class="signal-card__value">{{ dashboard.kpis[0].value }}</strong>
+            <p class="signal-card__detail">Manager reports available for today.</p>
+          </article>
+          <article class="signal-card">
+            <span class="signal-card__label">Missing</span>
+            <strong class="signal-card__value">{{ dashboard.kpis[1].value }}</strong>
+            <p class="signal-card__detail">Managers still missing from the day.</p>
+          </article>
+          <article class="signal-card">
+            <span class="signal-card__label">Open issues</span>
+            <strong class="signal-card__value">{{ dashboard.kpis[2].value }}</strong>
+            <p class="signal-card__detail">Reported issues that still need a decision.</p>
+          </article>
+          <article class="signal-card">
+            <span class="signal-card__label">Follow-up</span>
+            <strong class="signal-card__value">{{ dashboard.kpis[3].value }}</strong>
+            <p class="signal-card__detail">Assigned answers that need review.</p>
+          </article>
         </div>
       </section>
 
@@ -81,7 +61,7 @@
         <article class="question-block">
           <div class="panel-header">
             <div>
-              <div class="eyebrow">Key metrics</div>
+              <div class="eyebrow">Metrics</div>
               <h2>Key metrics</h2>
             </div>
             <span class="meta-chip meta-chip--subtle">today</span>
@@ -110,8 +90,8 @@
         <article class="question-block executive-brief" data-ui="executive-brief">
           <div class="panel-header">
             <div>
-              <div class="eyebrow">Ops notes</div>
-              <h2>Ops notes</h2>
+              <div class="eyebrow">Notes</div>
+              <h2>Notes</h2>
             </div>
             <span class="meta-chip meta-chip--subtle">summary</span>
           </div>
@@ -128,7 +108,7 @@
           <div class="panel-header">
             <div>
               <div class="eyebrow">Coverage</div>
-              <h2>Report coverage</h2>
+              <h2>Coverage</h2>
             </div>
             <span class="meta-chip meta-chip--subtle">self + direct reports</span>
           </div>
@@ -153,7 +133,7 @@
           <div class="panel-header">
             <div>
               <div class="eyebrow">Issues</div>
-              <h2>Open issues by team</h2>
+              <h2>Open issues</h2>
             </div>
             <span class="meta-chip meta-chip--subtle">risk + follow-up load</span>
           </div>
