@@ -11,53 +11,70 @@
           <span class="brand-lockup__title">Executive command deck</span>
         </div>
         <div class="topbar-meta topbar-nav">
-          <span class="meta-chip meta-chip--accent">Daily control</span>
-          <span class="meta-chip meta-chip--subtle mono">{{ dashboard.report_day.isoformat() }}</span>
+          <span class="meta-chip meta-chip--subtle">{{ dashboard.report_day.isoformat() }}</span>
+          <span class="meta-chip meta-chip--accent">Quiet Command Luxury</span>
           <a class="button-link button-link--small" href="/recap">Recap</a>
           <a class="button-link button-link--small" href="/">Entry</a>
         </div>
       </header>
 
       <section class="hero-card">
-        <div class="hero-grid">
-          <div class="hero-copy">
-            <div class="eyebrow">Command view</div>
-            <h1>Daily operating picture with less chrome, tighter hierarchy, and real control signals.</h1>
-            <p class="hero-subtitle">
-              Repo palette, cleaner surfaces, stronger graphs, and a sharper reading order: scan posture, confirm risks, then decide where leadership attention goes.
-            </p>
-            <div class="dashboard-nav-band">
-              <span class="meta-chip meta-chip--subtle">Overview</span>
-              <span class="meta-chip meta-chip--subtle">Signals</span>
-              <span class="meta-chip meta-chip--subtle">Graphs</span>
-              <span class="meta-chip meta-chip--subtle">Control band</span>
-              <span class="meta-chip meta-chip--subtle">Section drilldowns</span>
+        <div class="control-strip">
+          <div class="control-strip__meta">
+            <div class="control-strip__cluster">
+              <span class="meta-chip meta-chip--subtle">Executive control strip</span>
+              <span class="meta-chip meta-chip--accent">{{ dashboard.milwaukee_rollup.health }} posture</span>
+            </div>
+            <div class="control-strip__cluster">
+              <span class="meta-chip meta-chip--warning">{{ dashboard.kpis[1].value }} missing inputs</span>
+              <span class="meta-chip meta-chip--subtle">{{ dashboard.kpis[3].value }} escalations</span>
             </div>
           </div>
-          <div class="hero-strip">
-            <article class="signal-card signal-card--accent">
-              <span class="signal-card__label">Operating posture</span>
-              <strong class="signal-card__value">{{ dashboard.milwaukee_rollup.health }}</strong>
-              <p class="signal-card__detail">Milwaukee still sets the tone for the day, so that control band leads the page.</p>
-            </article>
-            <article class="signal-card">
-              <span class="signal-card__label">Missing manager inputs</span>
-              <strong class="signal-card__value">{{ dashboard.kpis[1].value }}</strong>
-              <p class="signal-card__detail">Gaps stay loud enough that leadership cannot scroll past them.</p>
-            </article>
-            <article class="signal-card">
-              <span class="signal-card__label">Escalations surfaced</span>
-              <strong class="signal-card__value">{{ dashboard.kpis[3].value }}</strong>
-              <p class="signal-card__detail">Follow-up answers stay visible instead of getting buried in text blocks.</p>
-            </article>
+          <div class="command-band">
+            <div class="command-band__story">
+              <div class="command-band__headline">
+                <div class="eyebrow">Command view</div>
+                <h1>Operating posture first. Noise stripped out.</h1>
+                <p class="hero-subtitle">
+                  This pass turns the dashboard into a clearer decision surface: operating posture, top risk, top opportunity, and who still owes the picture.
+                </p>
+              </div>
+              <div class="command-band__grid">
+                <article class="signal-card signal-card--lead">
+                  <span class="signal-card__label">Operating posture</span>
+                  <strong class="signal-card__value">{{ dashboard.milwaukee_rollup.health }}</strong>
+                  <p class="signal-card__detail">Milwaukee still drives the tone, so leadership reads Ricardo’s lane before anything else.</p>
+                </article>
+                <article class="signal-card">
+                  <span class="signal-card__label">Top risk now</span>
+                  <strong class="signal-card__value">{{ dashboard.kpis[2].value }}</strong>
+                  <p class="signal-card__detail">Active risks needing intervention instead of passive awareness.</p>
+                </article>
+                <article class="signal-card">
+                  <span class="signal-card__label">Missing inputs</span>
+                  <strong class="signal-card__value">{{ dashboard.kpis[1].value }}</strong>
+                  <p class="signal-card__detail">Managers still absent from the operating picture and blocking a clean read.</p>
+                </article>
+              </div>
+              <div class="command-band__actions">
+                <a class="button-link button-link--small" href="/recap">Open recap</a>
+                <a class="button-link button-link--small" href="/">Start entry</a>
+                <a class="button-link button-link--small" href="/manager?person_id=ricardo">Edit questions</a>
+                <a class="button-link button-link--small button-link--primary dashboard-execute" href="/execute-recap">Execute recap</a>
+              </div>
+            </div>
+            <div class="command-band__aside">
+              <article class="summary-card summary-card--spotlight">
+                <span class="summary-card__label">Top opportunity</span>
+                <strong class="metric-emphasis">{{ dashboard.kpis[0].value }}</strong>
+                <p class="summary-card__detail">Use the current report volume to tighten next-shift direction before follow-up questions spread.</p>
+              </article>
+              <article class="summary-card summary-card--warning">
+                <span class="summary-card__label">Leadership move</span>
+                <p class="summary-card__detail no-margin">Resolve missing manager inputs first, then clear the loudest Milwaukee bottleneck before drilling into secondary lanes.</p>
+              </article>
+            </div>
           </div>
-        </div>
-
-        <div class="action-row" style="margin-top: 20px; position: relative; z-index: 1;">
-          <a class="button-link button-link--small" href="/recap">Open recap</a>
-          <a class="button-link button-link--small" href="/">Start entry</a>
-          <a class="button-link button-link--small" href="/manager?person_id=ricardo">Edit questions</a>
-          <a class="button-link button-link--small button-link--primary dashboard-execute" href="/execute-recap">Execute recap</a>
         </div>
       </section>
 
@@ -65,25 +82,25 @@
         <article class="question-block">
           <div class="panel-header">
             <div>
-              <div class="eyebrow">KPI strip</div>
+              <div class="eyebrow">Weighted KPI rail</div>
               <h2>Daily control signals</h2>
             </div>
             <span class="meta-chip meta-chip--subtle">first scan</span>
           </div>
-          <div class="kpi-grid">
+          <div class="kpi-rail">
             {% for metric in dashboard.kpis %}
-              <div class="kpi-card kpi-card--{{ metric.tone }}">
+              <div class="kpi-card {% if loop.first %}kpi-card--lead{% endif %} kpi-card--{{ metric.tone }}">
                 <span class="kpi-card__label">{{ metric.label }}</span>
                 <strong class="kpi-card__value">{{ metric.value }}</strong>
                 <span class="kpi-card__subtext">
                   {% if metric.label == 'Reports in' %}
-                    Current updates shaping the command read.
+                    Current updates shaping the command read before leadership starts assigning fixes.
                   {% elif metric.label == 'Missing' %}
-                    People still absent from today’s picture.
+                    People still absent from today’s picture and reducing confidence in the read.
                   {% elif metric.label == 'Risks' %}
-                    Watch items leadership should not ignore.
+                    Issues already loud enough to merit intervention instead of observation.
                   {% else %}
-                    Assigned answers likely needing a decision.
+                    Assigned answers likely needing a same-day call rather than passive tracking.
                   {% endif %}
                 </span>
               </div>
@@ -97,7 +114,7 @@
               <div class="eyebrow">AI executive brief</div>
               <h2>What deserves leadership eyes first</h2>
             </div>
-            <span class="meta-chip meta-chip--accent">fast synthesis</span>
+            <span class="meta-chip meta-chip--accent">ranked read</span>
           </div>
           <ol class="brief-list">
             {% for bullet in dashboard.ai_brief %}
@@ -162,18 +179,35 @@
       <section class="rollup-band" data-ui="control-band">
         <div class="section-header">
           <div class="section-header__title">
-            <div class="eyebrow">Control band</div>
+            <div class="eyebrow">Milwaukee control spine</div>
             <h2>{{ dashboard.milwaukee_rollup.owner.name }} — {{ dashboard.milwaukee_rollup.owner.role }}</h2>
-            <p class="section-subline">City-level command spine for Milwaukee before drilling into function owners.</p>
+            <p class="section-subline">Milwaukee is the signature surface: observed state, what leadership needs now, and the consequence of delay.</p>
           </div>
           <span class="status-pill status-pill--{{ dashboard.milwaukee_rollup.health|lower }}">{{ dashboard.milwaukee_rollup.health }}</span>
         </div>
-        <div class="rollup-grid">
-          {% for bullet in dashboard.milwaukee_rollup.bullets %}
-            <article class="rollup-bullet">
-              <p class="memo-lead">{{ bullet }}</p>
+        <div class="milwaukee-spine">
+          <div class="milwaukee-spine__grid">
+            <article class="milwaukee-spine__panel milwaukee-spine__panel--owner">
+              <span class="section-meta">Owner</span>
+              <div class="milwaukee-spine__owner">
+                <strong>Ricardo owns the city-level read.</strong>
+                <p class="section-subline">His lane sets the pace for outbound, inventory, returns, and shift coordination under Milwaukee.</p>
+              </div>
             </article>
-          {% endfor %}
+            <article class="milwaukee-spine__panel">
+              <span class="section-meta">Observed</span>
+              <ul>
+                {% for bullet in dashboard.milwaukee_rollup.bullets[:2] %}
+                  <li>{{ bullet }}</li>
+                {% endfor %}
+              </ul>
+            </article>
+            <article class="milwaukee-spine__panel">
+              <span class="section-meta">Need now</span>
+              <p>{{ dashboard.milwaukee_rollup.bullets[2] if dashboard.milwaukee_rollup.bullets|length > 2 else dashboard.milwaukee_rollup.bullets[0] }}</p>
+              <p class="milwaukee-spine__consequence">If this stays fuzzy, the rest of the dashboard turns into downstream guesswork.</p>
+            </article>
+          </div>
         </div>
       </section>
 

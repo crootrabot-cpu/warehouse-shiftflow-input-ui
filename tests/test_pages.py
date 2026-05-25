@@ -72,9 +72,13 @@ def test_dashboard_route_renders_graph_markers():
 
     assert response.status_code == 200
     assert 'Executive command deck' in response.text
+    assert 'Quiet Command Luxury' in response.text
+    assert 'Executive control strip' in response.text
+    assert 'Operating posture first. Noise stripped out.' in response.text
+    assert 'Weighted KPI rail' in response.text
     assert 'Team coverage graph' in response.text
     assert 'Attention pressure by lane' in response.text
-    assert 'Control band' in response.text
+    assert 'Milwaukee control spine' in response.text
     assert 'data-ui="dashboard-nav"' in response.text
     assert 'data-ui="control-band"' in response.text
     assert 'svg' in response.text
